@@ -1,6 +1,5 @@
-export type UserInfo = {
-  uid: string
-  nickname: string
-  hashtag: string
-  email: string
+interface User {
+  name: string;
+  year: number;
+  password: string;
 }
