@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server"
-import { db } from "@/services/firebase"
 import { collection, addDoc, getDocs } from "firebase/firestore"
+import { NextResponse } from "next/server"
+
+import { db } from "@/services/firebase"
 
 export async function GET() {
   const snapshot = await getDocs(collection(db, "users"))

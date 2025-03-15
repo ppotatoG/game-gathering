@@ -28,6 +28,14 @@ module.exports = {
   plugins: ['import'],
 
   rules: {
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+
     'next/no-html-link-for-pages': 'off',
 
     'import/order': [
