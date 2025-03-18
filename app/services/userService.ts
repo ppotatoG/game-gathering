@@ -1,7 +1,7 @@
 import $axios from '@/lib/axios';
 
 export const registerUser = async () => {
-  const response = await $axios.post('/api/user');
+  const response = await $axios.post('/api/register');
   return response.data;
 }
 
