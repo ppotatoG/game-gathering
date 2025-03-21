@@ -1,34 +1,30 @@
 import "dotenv/config";
 import express from "express";
-import { Server as SocketServer } from "socket.io";
 import http from "http";
-import mongoose from "mongoose";
+import { Server } from "socket.io";
 
 const app = express();
 const server = http.createServer(app);
-const io = new SocketServer(server);
-
-const mongoURI = process.env.MONGO_URI || "";
-if (mongoURI) {
-  mongoose.connect(mongoURI)
-    .then(() => console.log("MongoDB connected"))
-    .catch(err => console.error("MongoDB connection error:", err));
-} else {
-  console.warn("MONGO_URI not provided. Skipping DB connection.");
-}
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
 
 io.on("connection", (socket) => {
-  console.log("Socket connected:", socket.id);
+  console.log("User connected:", socket.id);
+
+  socket.on("chatMessage", (data) => {
+    // data: { user: string; message: string }
+    io.emit("chatMessage", data);
+  });
+
   socket.on("disconnect", () => {
-    console.log("Socket disconnected:", socket.id);
+    console.log("User disconnected:", socket.id);
   });
 });
 
-app.get("/api/hello", (req, res) => {
-  res.json({ message: "Hello from Express" });
-});
-
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 8080;
 server.listen(PORT, () => {
-  console.log(`BACK: Server listening on port ${PORT}`);
+  console.log(`BACKEND: Server listening on port ${PORT}`);
 });
