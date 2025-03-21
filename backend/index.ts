@@ -1,10 +1,18 @@
-import "dotenv/config";
+import path from "path";
+import dotenv from "dotenv";
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
+import mongoose from "mongoose";
+
+dotenv.config({ path: path.resolve(__dirname, "./.env.local") });
 
 const app = express();
 const server = http.createServer(app);
+
+const MONGO_URI = `mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}`;
+const PORT = process.env.PORT || 8080;
+
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -12,19 +20,27 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
+  console.log("🔌 User connected:", socket.id);
 
   socket.on("chatMessage", (data) => {
-    // data: { user: string; message: string }
     io.emit("chatMessage", data);
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
+    console.log("❌ User disconnected:", socket.id);
   });
 });
 
-const PORT = process.env.PORT || 8080;
-server.listen(PORT, () => {
-  console.log(`BACKEND: Server listening on port ${PORT}`);
-});
+console.log("💬 MONGO_URI:", MONGO_URI);
+
+mongoose
+  .connect(MONGO_URI)
+  .then(() => {
+    console.log("🧩 BACKEND: MongoDB connected!");
+    server.listen(PORT, () => {
+      console.log(`🚀 BACKEND: Server listening on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ BACKEND: MongoDB connection error:", err);
+  });
