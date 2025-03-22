@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently -n \"FRONT,BACK\" -c \"cyan.bold,magenta.bold\" \"npm run dev:client\" \"npm run dev:server\"",
-    "dev:client": "cd frontend && npm run start",
+    "dev:client": "cd frontend && npm run dev",
     "dev:server": "cd backend && npm run start"
   },
   "devDependencies": {
