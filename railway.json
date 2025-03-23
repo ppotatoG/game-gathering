@@ -1,11 +1,11 @@
 {
   "builds": [
     {
-      "src": "frontend/",
+      "src": "frontend",
       "use": "@railway/builders-static"
     },
     {
-      "src": "backend/",
+      "src": "backend",
       "use": "@railway/builders-node"
     }
   ]
