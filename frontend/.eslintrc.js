@@ -9,7 +9,7 @@ module.exports = {
     ],
     env: {
         browser: true,
-        es2021: true,
+        node: true
     },
     settings: {
         react: {
@@ -37,5 +37,6 @@ module.exports = {
             },
         }],
         'space-in-parens': ['error', 'always'],
+        'react/react-in-jsx-scope': 'off',
     },
 };
