@@ -6,7 +6,9 @@
     },
     {
       "src": "backend",
-      "use": "@railway/builders-node"
+      "use": "@railway/builders-node",
+      "buildCommand": "npm install && npm run build",
+      "startCommand": "npm run start"
     }
   ]
 }
