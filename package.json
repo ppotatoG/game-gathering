@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "concurrently -n \"FRONT,BACK\" -c \"cyan.bold,magenta.bold\" \"npm run dev:client\" \"npm run dev:server\"",
     "dev:client": "cd frontend && npm run dev",
-    "dev:server": "cd backend && npm run start"
+    "dev:server": "cd backend && npm run dev"
   },
   "devDependencies": {
     "concurrently": "^7.6.0"

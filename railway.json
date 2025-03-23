@@ -1,0 +1,12 @@
+{
+  "builds": [
+    {
+      "src": "frontend/",
+      "use": "@railway/builders-static"
+    },
+    {
+      "src": "backend/",
+      "use": "@railway/builders-node"
+    }
+  ]
+}
