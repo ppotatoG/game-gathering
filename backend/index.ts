@@ -11,7 +11,7 @@ dotenv.config( { path: path.resolve( __dirname, './.env.local' ) } );
 const app = express();
 const server = http.createServer( app );
 
-const MONGO_URI = `mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}`;
+const MONGO_URI = process.env.MONGO_URI || '';
 const PORT = process.env.PORT || 8080;
 
 const io = new Server( server, {
