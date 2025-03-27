@@ -19,12 +19,14 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.8.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^6.22.3",
     "socket.io-client": "^4.8.1",
     "web-vitals": "^2.1.4",
-    "yaml": "2.4.2"
+    "yaml": "2.4.2",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
@@ -38,6 +40,7 @@
     "ajv": "^8.17.1",
     "eslint": "^8.56.0",
     "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-react": "^7.37.4",
     "typescript": "^5.8.2",
     "vite": "^6.2.2"
   },
