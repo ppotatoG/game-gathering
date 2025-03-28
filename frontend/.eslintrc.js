@@ -1,15 +1,16 @@
 module.exports = {
     root: true,
     parser: '@typescript-eslint/parser',
-    plugins: ['@typescript-eslint', 'react', 'import'],
+    plugins: ['@typescript-eslint', 'react', 'import', 'prettier'],
     extends: [
         'eslint:recommended',
         'plugin:react/recommended',
-        'plugin:@typescript-eslint/recommended'
+        'plugin:@typescript-eslint/recommended',
+        'plugin:prettier/recommended',
     ],
     env: {
         browser: true,
-        node: true
+        node: true,
     },
     settings: {
         react: {
@@ -17,26 +18,28 @@ module.exports = {
         },
     },
     rules: {
-        quotes: ['error', 'single'],
-        indent: ['error', 4],
-        'import/order': ['error', {
-            groups: [
-                'builtin',
-                'external',
-                'internal',
-                'parent',
-                'sibling',
-                'index',
-                'object',
-                'type'
-            ],
-            'newlines-between': 'always',
-            alphabetize: {
-                order: 'asc',
-                caseInsensitive: true,
-            },
-        }],
-        'space-in-parens': ['error', 'always'],
+        'prettier/prettier': 'error',
         'react/react-in-jsx-scope': 'off',
+        'no-console': 'off',
+        'import/order': [
+            'error',
+            {
+                groups: [
+                    'builtin',
+                    'external',
+                    'internal',
+                    'parent',
+                    'sibling',
+                    'index',
+                    'object',
+                    'type',
+                ],
+                'newlines-between': 'always',
+                alphabetize: {
+                    order: 'asc',
+                    caseInsensitive: true,
+                },
+            },
+        ],
     },
 };
