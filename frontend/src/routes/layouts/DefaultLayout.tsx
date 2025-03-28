@@ -10,7 +10,7 @@ export default function DefaultLayout() {
             minHeight="100vh"
             sx={theme => ({
                 background: theme.palette.background.default,
-                color: theme.palette.text.primary,
+                color: theme.palette.text.primary
             })}
         >
             <Header />
@@ -20,7 +20,7 @@ export default function DefaultLayout() {
                 p={2}
                 sx={theme => ({
                     background: theme.palette.background.paper,
-                    color: theme.palette.text.primary,
+                    color: theme.palette.text.primary
                 })}
             >
                 <Outlet />

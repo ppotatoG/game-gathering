@@ -8,13 +8,13 @@ const PopupContainer: React.FC = () => {
 
     return (
         <>
-            {popups.map( ( popup ) => (
+            {popups.map(popup => (
                 <Dialog
                     open={popup.open}
                     key={popup.id}
                     onClose={() => {
                         popup.onClose?.();
-                        closePopup( popup.id );
+                        closePopup(popup.id);
                     }}
                 >
                     <DialogTitle>{popup.title ?? '알림'}</DialogTitle>
@@ -23,22 +23,22 @@ const PopupContainer: React.FC = () => {
                         <Button
                             onClick={() => {
                                 popup.onSubmit?.();
-                                closePopup( popup.id );
+                                closePopup(popup.id);
                             }}
                         >
-                          Submit
+                            Submit
                         </Button>
                         <Button
                             onClick={() => {
                                 popup.onClose?.();
-                                closePopup( popup.id );
+                                closePopup(popup.id);
                             }}
                         >
-                          Close
+                            Close
                         </Button>
                     </DialogActions>
                 </Dialog>
-            ) )}
+            ))}
         </>
     );
 };

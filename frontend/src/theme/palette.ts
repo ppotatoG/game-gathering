@@ -4,73 +4,73 @@ const palette = {
         primary: {
             main: '#0D47A1',
             light: '#5472d3',
-            dark: '#002171',
+            dark: '#002171'
         },
         secondary: {
             main: '#FDD835',
             light: '#ffff6b',
-            dark: '#c6a700',
+            dark: '#c6a700'
         },
         success: {
             main: '#2e7d32',
             light: '#60ad5e',
-            dark: '#005005',
+            dark: '#005005'
         },
         error: {
             main: '#d32f2f',
             light: '#ff6659',
-            dark: '#9a0007',
+            dark: '#9a0007'
         },
         info: {
             main: '#0288d1',
             light: '#5eb8ff',
-            dark: '#005b9f',
+            dark: '#005b9f'
         },
         background: {
             default: '#f4f6f8',
-            paper: '#ffffff',
+            paper: '#ffffff'
         },
         text: {
             primary: '#0d0d0d',
-            secondary: '#4f4f4f',
-        },
+            secondary: '#4f4f4f'
+        }
     },
     dark: {
         mode: 'dark',
         primary: {
             main: '#90caf9',
             light: '#e3f2fd',
-            dark: '#42a5f5',
+            dark: '#42a5f5'
         },
         secondary: {
             main: '#ffe082',
             light: '#ffffb3',
-            dark: '#caae53',
+            dark: '#caae53'
         },
         success: {
             main: '#81c784',
             light: '#b2fab4',
-            dark: '#519657',
+            dark: '#519657'
         },
         error: {
             main: '#ef5350',
             light: '#ff867c',
-            dark: '#b61827',
+            dark: '#b61827'
         },
         info: {
             main: '#4fc3f7',
             light: '#8bf6ff',
-            dark: '#0093c4',
+            dark: '#0093c4'
         },
         background: {
             default: '#121212',
-            paper: '#1e1e1e',
+            paper: '#1e1e1e'
         },
         text: {
             primary: '#ffffff',
-            secondary: '#b0bec5',
-        },
-    },
+            secondary: '#b0bec5'
+        }
+    }
 } as const;
 
 export default palette;

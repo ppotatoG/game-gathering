@@ -13,7 +13,7 @@ const DarkModeToggle = () => {
                 onClick={toggle}
                 sx={{
                     color: mode === 'dark' ? 'warning.light' : 'primary.dark',
-                    transition: 'color 0.3s ease',
+                    transition: 'color 0.3s ease'
                 }}
             >
                 {mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}

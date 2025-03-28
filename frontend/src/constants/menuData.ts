@@ -1,10 +1,10 @@
 export const NAVIGATION_MENU = [
     {
         label: 'User',
-        path: '/user',
+        path: '/user'
     },
     {
         label: 'Auction',
-        path: '/auction',
-    },
+        path: '/auction'
+    }
 ] as const;

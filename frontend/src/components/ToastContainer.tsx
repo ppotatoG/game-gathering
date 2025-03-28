@@ -8,22 +8,19 @@ const ToastContainer: React.FC = () => {
 
     return (
         <>
-            {toasts.map( ( toast ) => (
+            {toasts.map(toast => (
                 <Snackbar
                     key={toast.id}
                     open
-                    onClose={() => removeToast( toast.id )}
+                    onClose={() => removeToast(toast.id)}
                     autoHideDuration={3000}
                     anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                 >
-                    <Alert
-                        severity={toast.type}
-                        onClose={() => removeToast( toast.id )}
-                    >
+                    <Alert severity={toast.type} onClose={() => removeToast(toast.id)}>
                         {toast.message}
                     </Alert>
                 </Snackbar>
-            ) )}
+            ))}
         </>
     );
 };

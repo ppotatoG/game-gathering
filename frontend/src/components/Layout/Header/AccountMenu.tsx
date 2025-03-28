@@ -13,7 +13,7 @@ const AccountMenu = () => {
                     onClick={handleClick}
                     sx={{
                         color: 'secondary.main',
-                        transition: 'color 0.2s ease',
+                        transition: 'color 0.2s ease'
                     }}
                 >
                     <AccountCircle />

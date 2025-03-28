@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 
 interface UserStoreState {
-  userInfo: UserInfo;
-  setUserInfo: ( info: UserInfo ) => void;
-  clearUserInfo: () => void;
+    userInfo: UserInfo;
+    setUserInfo: (info: UserInfo) => void;
+    clearUserInfo: () => void;
 }
 
 const initialState: UserInfo = {
@@ -12,11 +12,11 @@ const initialState: UserInfo = {
     userDetails: {
         name: '',
         email: '',
-        password: '',
-    },
-}
-export const useUserStore = create<UserStoreState>( ( set ) => ( {
+        password: ''
+    }
+};
+export const useUserStore = create<UserStoreState>(set => ({
     userInfo: initialState,
-    setUserInfo: ( info ) => set( { userInfo: info } ),
-    clearUserInfo: () => set( { userInfo: initialState } ),
-} ) );
+    setUserInfo: info => set({ userInfo: info }),
+    clearUserInfo: () => set({ userInfo: initialState })
+}));

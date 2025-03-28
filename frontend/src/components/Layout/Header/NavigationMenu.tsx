@@ -18,8 +18,8 @@ const NavigationMenu = () => {
                         fontWeight: 600,
                         '&:hover': {
                             backgroundColor: 'primary.light',
-                            color: 'text.primary',
-                        },
+                            color: 'text.primary'
+                        }
                     }}
                 >
                     {menu.label}

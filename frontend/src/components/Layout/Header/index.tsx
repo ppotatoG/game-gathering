@@ -12,7 +12,7 @@ const Header = () => {
             sx={{
                 background: 'background.paper',
                 color: 'text.primary',
-                borderBottom: theme => `1px solid ${theme.palette.divider}`,
+                borderBottom: theme => `1px solid ${theme.palette.divider}`
             }}
         >
             <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>

@@ -1,5 +1,5 @@
 interface LoadingStoreState {
-  loadingCount: number;
-  startLoading: () => void;
-  stopLoading: () => void;
+    loadingCount: number;
+    startLoading: () => void;
+    stopLoading: () => void;
 }

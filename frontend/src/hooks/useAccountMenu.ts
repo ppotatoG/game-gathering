@@ -22,6 +22,6 @@ export const useAccountMenu = () => {
         handleClick,
         handleClose,
         nickname,
-        club,
+        club
     };
 };
