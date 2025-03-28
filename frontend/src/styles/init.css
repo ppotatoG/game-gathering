@@ -1,0 +1,58 @@
+/* src/styles/init.css (Tailwind Preflight 스타일 참고) */
+
+*, ::before, ::after {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Roboto', 'Noto Sans KR', sans-serif;
+    background-color: #fff;
+    color: #000;
+}
+
+a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+button, input, optgroup, select, textarea {
+    font: inherit;
+    margin: 0;
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+img, video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+ul, ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+:where([hidden]) {
+    display: none;
+}

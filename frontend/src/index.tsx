@@ -10,6 +10,8 @@ import ToastContainer from '@/components/ToastContainer';
 import { useThemeStore } from '@/store/useThemeStore';
 import { lightTheme, darkTheme } from '@/theme';
 
+import '@/styles/init.css';
+
 const mode = useThemeStore.getState().mode;
 
 createRoot( document.getElementById( 'root' )! ).render(
