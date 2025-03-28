@@ -6,19 +6,19 @@ module.exports = {
         'eslint:recommended',
         'plugin:react/recommended',
         'plugin:@typescript-eslint/recommended',
-        'plugin:prettier/recommended',
+        'plugin:prettier/recommended'
     ],
     env: {
         browser: true,
-        node: true,
+        node: true
     },
     settings: {
         react: {
-            version: 'detect',
-        },
+            version: 'detect'
+        }
     },
     rules: {
-        'prettier/prettier': 'error',
+        'prettier/prettier': ['error', { trailingComma: 'none' }],
         'react/react-in-jsx-scope': 'off',
         'no-console': 'off',
         'import/order': [
@@ -32,14 +32,14 @@ module.exports = {
                     'sibling',
                     'index',
                     'object',
-                    'type',
+                    'type'
                 ],
                 'newlines-between': 'always',
                 alphabetize: {
                     order: 'asc',
-                    caseInsensitive: true,
-                },
-            },
-        ],
-    },
+                    caseInsensitive: true
+                }
+            }
+        ]
+    }
 };
