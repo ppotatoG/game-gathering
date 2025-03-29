@@ -11,10 +11,25 @@ const DarkModeToggle = () => {
         <Tooltip title={mode === 'dark' ? 'Light mode' : 'Dark mode'}>
             <IconButton
                 onClick={toggle}
-                sx={{
-                    color: mode === 'dark' ? 'warning.light' : 'primary.dark',
-                    transition: 'color 0.3s ease'
-                }}
+                sx={theme => ({
+                    color:
+                        theme.palette.mode === 'dark'
+                            ? theme.palette.warning.light
+                            : theme.palette.primary.main,
+                    backgroundColor:
+                        theme.palette.mode === 'dark'
+                            ? theme.palette.grey[800]
+                            : theme.palette.grey[100],
+                    '&:hover': {
+                        backgroundColor:
+                            theme.palette.mode === 'dark'
+                                ? theme.palette.grey[700]
+                                : theme.palette.grey[200]
+                    },
+                    transition: 'all 0.2s ease-in-out',
+                    borderRadius: 2,
+                    p: 1
+                })}
             >
                 {mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
             </IconButton>

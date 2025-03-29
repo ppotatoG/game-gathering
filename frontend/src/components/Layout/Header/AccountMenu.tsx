@@ -11,10 +11,21 @@ const AccountMenu = () => {
             <Tooltip title="Account settings">
                 <IconButton
                     onClick={handleClick}
-                    sx={{
-                        color: 'secondary.main',
-                        transition: 'color 0.2s ease'
-                    }}
+                    sx={theme => ({
+                        color: theme.palette.secondary.main,
+                        backgroundColor:
+                            theme.palette.mode === 'dark'
+                                ? theme.palette.grey[800]
+                                : theme.palette.grey[100],
+                        '&:hover': {
+                            backgroundColor:
+                                theme.palette.mode === 'dark'
+                                    ? theme.palette.grey[700]
+                                    : theme.palette.grey[200]
+                        },
+                        borderRadius: 2,
+                        transition: 'all 0.2s ease-in-out'
+                    })}
                 >
                     <AccountCircle />
                 </IconButton>

@@ -10,17 +10,23 @@ const NavigationMenu = () => {
         <>
             {NAVIGATION_MENU.map(menu => (
                 <Button
-                    key={menu.path}
+                    key={menu.label}
                     onClick={() => navigate(menu.path)}
                     variant="text"
-                    color="primary"
-                    sx={{
+                    sx={theme => ({
                         fontWeight: 600,
+                        color: theme.palette.text.secondary,
                         '&:hover': {
-                            backgroundColor: 'primary.light',
-                            color: 'text.primary'
-                        }
-                    }}
+                            backgroundColor:
+                                theme.palette.mode === 'dark'
+                                    ? theme.palette.grey[800]
+                                    : theme.palette.grey[100],
+                            color: theme.palette.primary.main,
+                            borderRadius: 1
+                        },
+                        px: 2,
+                        py: 1
+                    })}
                 >
                     {menu.label}
                 </Button>
