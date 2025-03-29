@@ -1,32 +1,41 @@
 module.exports = {
     root: true,
     parser: '@typescript-eslint/parser',
-    plugins: ['@typescript-eslint', 'import'],
-    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+    plugins: ['@typescript-eslint', 'import', 'prettier'],
+    extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:prettier/recommended',
+    ],
     env: {
         node: true,
         es2021: true,
     },
     rules: {
+        'prettier/prettier': 'error',
         quotes: ['error', 'single'],
-        indent: ['error', 4],
-        'import/order': ['error', {
-            groups: [
-                'builtin',
-                'external',
-                'internal',
-                'parent',
-                'sibling',
-                'index',
-                'object',
-                'type',
-            ],
-            'newlines-between': 'always',
-            alphabetize: {
-                order: 'asc',
-                caseInsensitive: true,
+        indent: 'off',
+        '@typescript-eslint/indent': 'off',
+        'space-in-parens': 'off',
+        'import/order': [
+            'error',
+            {
+                groups: [
+                    'builtin',
+                    'external',
+                    'internal',
+                    'parent',
+                    'sibling',
+                    'index',
+                    'object',
+                    'type',
+                ],
+                'newlines-between': 'always',
+                alphabetize: {
+                    order: 'asc',
+                    caseInsensitive: true,
+                },
             },
-        }],
-        'space-in-parens': ['error', 'always'],
+        ],
     },
 };
