@@ -6,6 +6,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { Server } from 'socket.io';
 
+import auctionRouter from './routes/auction';
+
 dotenv.config({ path: path.resolve(__dirname, './.env.local') });
 
 const app = express();
@@ -19,6 +21,10 @@ const io = new Server(server, {
         origin: '*',
     },
 });
+
+app.use(express.json());
+
+app.use('/api/auction', auctionRouter);
 
 io.on('connection', socket => {
     console.log('🔌 User connected:', socket.id);
@@ -35,7 +41,6 @@ io.on('connection', socket => {
 console.log('💬 MONGO_URI:', MONGO_URI);
 
 mongoose
-
     .connect(MONGO_URI)
     .then(() => {
         console.log('🧩 BACKEND: MongoDB connected!');
