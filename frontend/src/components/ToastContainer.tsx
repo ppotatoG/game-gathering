@@ -1,4 +1,4 @@
-import { Snackbar, Alert } from '@mui/material';
+import { Snackbar, Alert, Slide, SlideProps } from '@mui/material';
 import React from 'react';
 
 import { useToastStore } from '@/store/useToastStore';
@@ -10,13 +10,30 @@ const ToastContainer: React.FC = () => {
         <>
             {toasts.map(toast => (
                 <Snackbar
-                    key={toast.id}
-                    open
+                    key={`toast-${toast.id}`}
+                    open={toast.open}
                     onClose={() => removeToast(toast.id)}
-                    autoHideDuration={3000}
-                    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                    autoHideDuration={null}
+                    slots={{
+                        transition: Slide
+                    }}
+                    slotProps={{
+                        transition: {
+                            direction: 'right',
+                            timeout: {
+                                enter: 300,
+                                exit: 300
+                            }
+                        } as SlideProps
+                    }}
                 >
-                    <Alert severity={toast.type} onClose={() => removeToast(toast.id)}>
+                    <Alert
+                        severity={toast.type}
+                        onClose={() => removeToast(toast.id)}
+                        variant="filled"
+                        sx={{ width: '100%' }}
+                    >
                         {toast.message}
                     </Alert>
                 </Snackbar>
