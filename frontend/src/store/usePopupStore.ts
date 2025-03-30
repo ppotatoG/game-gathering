@@ -1,9 +1,13 @@
 import { nanoid } from 'nanoid';
 import { create } from 'zustand';
 
+type PopupItemInput = Omit<PopupItem, 'id' | 'popupType'> & {
+    popupType?: PopupType;
+};
+
 interface PopupStoreState {
     popups: PopupItem[];
-    showPopup: (popup: Omit<PopupItem, 'id'>) => void;
+    showPopup: (popup: PopupItemInput) => void;
     closePopup: (id: string) => void;
 }
 
@@ -11,7 +15,8 @@ export const usePopupStore = create<PopupStoreState>(set => ({
     popups: [],
     showPopup: popup => {
         const id = nanoid();
-        const newPopup: PopupItem = { id, ...popup };
+        const popupType = popup.popupType ?? 'info';
+        const newPopup: PopupItem = { id, ...popup, popupType };
         set(state => ({
             popups: [...state.popups, newPopup]
         }));

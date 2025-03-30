@@ -1,4 +1,11 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    Typography
+} from '@mui/material';
 import React from 'react';
 
 import { usePopupStore } from '@/store/usePopupStore';
@@ -9,32 +16,32 @@ const PopupContainer: React.FC = () => {
     return (
         <>
             {popups.map(popup => (
-                <Dialog
-                    open={popup.open}
-                    key={popup.id}
-                    onClose={() => {
-                        popup.onClose?.();
-                        closePopup(popup.id);
-                    }}
-                >
-                    <DialogTitle>{popup.title ?? '알림'}</DialogTitle>
-                    <DialogContent>{popup.description}</DialogContent>
+                <Dialog open key={popup.id} onClose={() => closePopup(popup.id)}>
+                    <DialogTitle
+                        sx={theme => ({
+                            backgroundColor: theme.palette[popup.popupType].main,
+                            color: theme.palette[popup.popupType].contrastText,
+                            fontWeight: 600
+                        })}
+                    >
+                        {popup.title ?? '알림'}
+                    </DialogTitle>
+                    <DialogContent sx={{ mt: 3 }}>
+                        <Typography variant="body1">{popup.description}</Typography>
+                    </DialogContent>
                     <DialogActions>
                         <Button
+                            variant="contained"
+                            color={popup.popupType}
                             onClick={() => {
                                 popup.onSubmit?.();
                                 closePopup(popup.id);
                             }}
                         >
-                            Submit
+                            {popup.submitText ?? '확인'}
                         </Button>
-                        <Button
-                            onClick={() => {
-                                popup.onClose?.();
-                                closePopup(popup.id);
-                            }}
-                        >
-                            Close
+                        <Button variant="outlined" onClick={() => closePopup(popup.id)}>
+                            닫기
                         </Button>
                     </DialogActions>
                 </Dialog>
