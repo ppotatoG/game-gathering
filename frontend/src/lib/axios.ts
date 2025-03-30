@@ -23,7 +23,13 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     response => {
         const { stopLoading } = useLoadingStore.getState();
+        const { addToast } = useToastStore.getState();
+
         stopLoading();
+
+        const message = response?.data?.message;
+        addToast('success', message || '요청이 성공했습니다.');
+
         return response;
     },
     error => {
