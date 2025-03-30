@@ -1,3 +1,5 @@
+console.log('✅ auctionRouter loaded');
+
 import { Request, Response, Router } from 'express';
 import { Document } from 'mongoose';
 import { nanoid } from 'nanoid';
@@ -32,7 +34,7 @@ type AuctionCreateResponse = {
 router.post(
     '/create',
     async (
-        req: Request<{}, AuctionCreateResponse, AuctionCreateRequest>,
+        req: Request<NonNullable<unknown>, AuctionCreateResponse, AuctionCreateRequest>,
         res: Response<AuctionCreateResponse>
     ) => {
         try {
