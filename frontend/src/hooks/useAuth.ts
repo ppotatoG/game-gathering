@@ -1,4 +1,4 @@
-import * as authService from '@/service/authService';
+import * as authService from '@/services/authService';
 import { useToastStore } from '@/store/useToastStore';
 import { useUserStore } from '@/store/useUserStore';
 
