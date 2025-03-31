@@ -1,31 +1,37 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import DefaultLayout from './layouts/DefaultLayout';
+import EmptyLayout from './layouts/EmptyLayout';
 import Auction from './pages/Auction';
-import Auth from './pages/Auth';
+import CreateAuctionPage from './pages/auction/CreateAuctionPage';
 import NotFound from './pages/NotFound';
 
 const router = createBrowserRouter([
     {
-        element: <DefaultLayout />,
+        element: <EmptyLayout />,
         children: [
             {
                 path: '/',
-                element: <Auth />
+                element: <CreateAuctionPage />
             },
             {
-                path: '/Auth',
-                element: <Auth />
-            },
+                path: '/auction/create',
+                element: <CreateAuctionPage />
+            }
+        ]
+    },
+    {
+        element: <DefaultLayout />,
+        children: [
             {
                 path: '/auction',
                 element: <Auction />
-            },
-            {
-                path: '*',
-                element: <NotFound />
             }
         ]
+    },
+    {
+        path: '*',
+        element: <NotFound />
     }
 ]);
 
