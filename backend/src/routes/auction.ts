@@ -1,11 +1,12 @@
+console.log('✅ auctionRouter loaded');
+
 import bcrypt from 'bcrypt';
 import { Request, Response, Router } from 'express';
 import { Document } from 'mongoose';
 import { nanoid } from 'nanoid';
 
 import Auction from '../models/Auction';
-
-console.log('✅ auctionRouter loaded');
+import AuctionUser from '../models/AuctionUser';
 
 const router = Router();
 
@@ -42,6 +43,27 @@ type AdminLoginRequest = {
 type AdminLoginResponse = {
     success: boolean;
     data?: { code: string };
+    message?: string;
+};
+
+type AuctionUserInput = {
+    nickname: string;
+    tag: string;
+};
+
+type BulkSaveRequest = {
+    code: string;
+    users: AuctionUserInput[];
+};
+
+type BulkSaveResponse = {
+    success: boolean;
+    message?: string;
+};
+
+type GetAuctionUsersResponse = {
+    success: boolean;
+    users?: AuctionUserInput[];
     message?: string;
 };
 
@@ -124,4 +146,55 @@ router.post(
     }
 );
 
+router.post(
+    '/:code/users',
+    async (
+        req: Request<{ code: string }, BulkSaveResponse, { users: AuctionUserInput[] }>,
+        res: Response<BulkSaveResponse>
+    ) => {
+        try {
+            const { code } = req.params;
+            const { users } = req.body;
+
+            if (!code || !Array.isArray(users) || users.length === 0) {
+                res.status(400).json({ success: false, message: '유효한 데이터가 없습니다.' });
+                return;
+            }
+
+            await AuctionUser.findOneAndUpdate(
+                { code },
+                { users, createdAt: new Date() },
+                { upsert: true, new: true }
+            );
+
+            res.status(200).json({ success: true });
+        } catch (err) {
+            console.error('[POST /api/auction/:code/users] 오류:', err);
+            res.status(500).json({ success: false, message: '서버 오류입니다.' });
+        }
+    }
+);
+
+router.get(
+    '/:code/users',
+    async (
+        req: Request<{ code: string }, GetAuctionUsersResponse>,
+        res: Response<GetAuctionUsersResponse>
+    ) => {
+        try {
+            const { code } = req.params;
+            const auctionUsers = await AuctionUser.findOne({ code });
+
+            if (!auctionUsers) {
+                res.status(404).json({ success: false, message: '유저 정보가 없습니다.' });
+                return;
+            }
+
+            res.status(200).json({ success: true, users: auctionUsers.users });
+        } catch (err) {
+            console.error('[GET /api/auction/:code/users] 오류:', err);
+            res.status(500).json({ success: false, message: '서버 오류입니다.' });
+        }
+    }
+);
 export default router;
