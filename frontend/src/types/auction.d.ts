@@ -3,6 +3,7 @@ interface AuctionCreateRequest {
     hostName: string;
     auctionTitle: string;
     memberCount: number;
+    adminPassword: string;
 }
 
 interface Auction {

@@ -58,6 +58,15 @@ const CreateAuctionPage = () => {
                     ))}
                 </TextField>
 
+                <TextField
+                    label="관리자 비밀번호"
+                    name="adminPassword"
+                    value={form.adminPassword}
+                    onChange={handleChange}
+                    fullWidth
+                    required
+                />
+
                 <Button type="submit" variant="contained" color="primary">
                     생성하기
                 </Button>

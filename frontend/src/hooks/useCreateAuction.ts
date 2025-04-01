@@ -11,7 +11,8 @@ export const useCreateAuction = () => {
         clubName: '',
         hostName: '',
         auctionTitle: '',
-        memberCount: 10
+        memberCount: 10,
+        adminPassword: ''
     });
 
     const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
