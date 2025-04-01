@@ -8,16 +8,20 @@ export interface AuctionDocument extends Document {
     memberCount: number;
     captainCount: number;
     createdAt: Date;
+    adminPasswordHash: string;
 }
 
-const AuctionSchema: Schema = new Schema( {
-    code: { type: String, required: true, unique: true },
-    clubName: { type: String, required: true },
-    hostName: { type: String, required: true },
-    auctionTitle: { type: String, required: true },
-    memberCount: { type: Number, required: true },
-    captainCount: { type: Number, required: true },
-    createdAt: { type: Date, default: Date.now },
-} );
+const AuctionSchema = new Schema(
+    {
+        code: { type: String, required: true, unique: true },
+        clubName: { type: String, required: true },
+        hostName: { type: String, required: true },
+        auctionTitle: { type: String, required: true },
+        memberCount: { type: Number, required: true },
+        captainCount: { type: Number, required: true },
+        adminPasswordHash: { type: String, required: true },
+    },
+    { timestamps: true }
+);
 
-export default mongoose.model<AuctionDocument>( 'Auction', AuctionSchema );
+export default mongoose.models.Auction<AuctionDocument> || mongoose.model('Auction', AuctionSchema);
