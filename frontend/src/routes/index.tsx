@@ -7,6 +7,7 @@ import CreateAuctionPage from './pages/auction/CreateAuctionPage';
 import NotFound from './pages/NotFound';
 
 import AdminLoginPage from '@/routes/pages/auction/AdminLoginPage';
+import AdminPage from '@/routes/pages/auction/AdminPage';
 
 const router = createBrowserRouter([
     {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
             {
                 path: '/auction',
                 element: <Auction />
+            },
+            {
+                path: '/auction/:code/admin',
+                element: <AdminPage />
             }
         ]
     },

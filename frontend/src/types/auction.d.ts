@@ -21,3 +21,18 @@ interface AuctionCreateResponse {
     data?: Auction;
     message?: string;
 }
+
+interface AuctionUserInput {
+    nickname: string;
+    tag: string;
+}
+
+interface AuctionUser extends AuctionUserInput {
+    code: string;
+    createdAt: string;
+    currentTier?: string;
+    highestTier?: string;
+    mainRole?: string;
+    riotFetched: boolean;
+    riotFetchedAt?: string;
+}
