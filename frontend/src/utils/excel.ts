@@ -1,5 +1,7 @@
 import * as XLSX from 'xlsx';
 
+import { parseUserString } from '@/utils/parseUserString';
+
 export const parseAuctionExcel = async (file: File): Promise<AuctionUserInput[]> => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -11,14 +13,7 @@ export const parseAuctionExcel = async (file: File): Promise<AuctionUserInput[]>
             const sheet = workbook.Sheets[sheetName];
             const raw = XLSX.utils.sheet_to_json<{ users: string }>(sheet);
 
-            const parsed = raw.map(entry => {
-                const [nickname, tag] = entry.users.split('#');
-                return {
-                    nickname: nickname?.trim(),
-                    tag: tag?.trim()
-                };
-            });
-
+            const parsed = raw.map(entry => parseUserString(entry.users));
             resolve(parsed);
         };
 
