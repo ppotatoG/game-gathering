@@ -31,6 +31,11 @@ export const useAuctionUsers = (code: string) => {
         }
     }, [code]);
 
+    const deleteUsers = useCallback(async () => {
+        await saveAuctionUsers(code, []);
+        await fetchUsers();
+    }, [code, fetchUsers]);
+
     const updateUserWithRiotData = useCallback(async () => {
         await fetchRiotDataForUsers(code);
         setLastUpdated(new Date().toLocaleString());
@@ -44,6 +49,7 @@ export const useAuctionUsers = (code: string) => {
         users,
         lastUpdated,
         importUsersFromExcel,
+        deleteUsers,
         updateUserWithRiotData
     };
 };

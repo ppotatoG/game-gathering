@@ -9,9 +9,8 @@ const AdminPage = () => {
     const { code } = useParams<{ code: string }>();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const { importUsersFromExcel, updateUserWithRiotData, users, lastUpdated } = useAuctionUsers(
-        code || ''
-    );
+    const { importUsersFromExcel, updateUserWithRiotData, users, lastUpdated, deleteUsers } =
+        useAuctionUsers(code || '');
 
     const handleExcelUpload = () => {
         fileInputRef.current?.click();
@@ -53,6 +52,9 @@ const AdminPage = () => {
                     disabled={!!lastUpdated}
                 >
                     라이엇 정보 갱신
+                </Button>
+                <Button variant="contained" color="error" onClick={deleteUsers}>
+                    유저 초기화
                 </Button>
             </Stack>
 
