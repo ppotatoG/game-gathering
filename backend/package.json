@@ -5,12 +5,13 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "ts-node-dev --transpile-only --ignore-watch node_modules src/index.ts",
+    "dev": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules -r tsconfig-paths/register src/index.ts",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix"
   },
   "dependencies": {
     "@types/socket.io": "^3.0.1",
+    "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -33,6 +34,7 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.5",
     "prettier": "^3.5.3",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.3"
   }
 }
