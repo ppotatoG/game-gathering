@@ -9,6 +9,8 @@ export interface AuctionUserDocument extends Document {
     code: string;
     users: AuctionUserData[];
     createdAt: Date;
+    riotFetched: boolean;
+    riotFetchedAt: Date | null;
 }
 
 const AuctionUserSchema = new Schema<AuctionUserDocument>(
@@ -21,6 +23,8 @@ const AuctionUserSchema = new Schema<AuctionUserDocument>(
             },
         ],
         createdAt: { type: Date, default: Date.now },
+        riotFetched: { type: Boolean, default: false },
+        riotFetchedAt: { type: Date, default: null },
     },
     {
         timestamps: false,
