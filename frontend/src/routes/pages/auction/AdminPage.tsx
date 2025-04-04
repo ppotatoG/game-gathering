@@ -9,8 +9,9 @@ const AdminPage = () => {
     const { code } = useParams<{ code: string }>();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const { importUsersFromExcel, updateUserWithRiotData, users, lastUpdated, deleteUsers } =
-        useAuctionUsers(code || '');
+    const { importUsersFromExcel, updateUserWithRiotData, users, deleteUsers } = useAuctionUsers(
+        code || ''
+    );
 
     const handleExcelUpload = () => {
         fileInputRef.current?.click();
@@ -42,14 +43,13 @@ const AdminPage = () => {
 
             <Stack direction="row" spacing={2} mb={2}>
                 <Button variant="outlined" onClick={handleExcelUpload}>
-                    {/*<Button variant="outlined" onClick={handleExcelUpload} disabled={users.length > 0}>*/}
                     엑셀 업로드
                 </Button>
                 <Button
                     variant="contained"
                     color="primary"
                     onClick={updateUserWithRiotData}
-                    disabled={!!lastUpdated}
+                    disabled={true}
                 >
                     라이엇 정보 갱신
                 </Button>

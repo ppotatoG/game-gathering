@@ -27,12 +27,14 @@ interface AuctionUserInput {
     tag: string;
 }
 
-interface AuctionUser extends AuctionUserInput {
-    code: string;
-    createdAt: string;
-    currentTier?: string;
-    highestTier?: string;
-    mainRole?: string;
+interface AuctionUserData {
+    nickname: string;
+    tag: string;
+}
+
+interface GetAuctionUsersResponse {
+    success: boolean;
+    users: AuctionUserData[];
     riotFetched: boolean;
-    riotFetchedAt?: string;
+    riotFetchedAt: string | null;
 }

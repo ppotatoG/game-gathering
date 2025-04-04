@@ -1,4 +1,3 @@
-import axios from 'axios';
 import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { nanoid } from 'nanoid';
@@ -15,6 +14,7 @@ import {
     GetAuctionUsersResponse,
     DefaultResponse,
 } from '@/types/auction';
+import { fetchUserRiotData } from '@/utils/riot/syncRiotUser';
 import { sleep } from '@/utils/sleep';
 
 export const createAuction = async (
@@ -148,5 +148,78 @@ export const getAuctionUsers = async (
         console.error('Get Users Error:', err);
         res.status(500).json({ success: false, message: '서버 오류' });
         return;
+    }
+};
+
+export const syncRiotData = async (
+    req: Request<{ code: string }, DefaultResponse>,
+    res: Response<DefaultResponse>
+) => {
+    try {
+        const { code } = req.params;
+        const RIOT_API_KEY = process.env.RIOT_API_KEY;
+        const matchRegion = 'asia';
+
+        if (!RIOT_API_KEY) {
+            res.status(500).json({ success: false, message: 'API 키 없음' });
+            return;
+        }
+
+        const doc = await AuctionUser.findOne({ code });
+        if (!doc) {
+            res.status(404).json({ success: false, message: '유저 없음' });
+            return;
+        }
+
+        // if (doc.riotFetched) {
+        //     console.warn(`[⚠️ 연동 차단됨] 이미 연동됨: ${code}`);
+        //     res.status(400).json({ success: false, message: '이미 라이엇 데이터 연동됨' });
+        //     return;
+        // }
+
+        console.log(`[🟢 연동 시작] code: ${code}, 유저 수: ${doc.users.length}`);
+
+        const enrichedUsers = [];
+        const targetUsers = doc.users.slice(0, 2);
+
+        for (const [i, user] of targetUsers.entries()) {
+            console.log(`\n[🔍 ${i + 1}/${targetUsers.length}] 유저: ${user.nickname}`);
+
+            try {
+                const data = await fetchUserRiotData(user.nickname, user.tag, RIOT_API_KEY);
+
+                if (data) {
+                    enrichedUsers.push({ ...user, ...data });
+                } else {
+                    enrichedUsers.push(user);
+                }
+
+                await sleep(1200);
+            } catch (e: any) {
+                console.error(`[❌ Riot 연동 실패: ${user.nickname}]`, e.message);
+                if (e.response) {
+                    console.error('[📛 응답 코드]', e.response.status);
+                    console.error('[📛 응답 바디]', e.response.data);
+                }
+                enrichedUsers.push(user);
+                await sleep(1200);
+            }
+        }
+
+        doc.users = enrichedUsers;
+        doc.riotFetched = true;
+        doc.riotFetchedAt = new Date();
+        await doc.save();
+
+        console.log(`\n[✅ 연동 완료] 유저 수: ${enrichedUsers.length}, code: ${code}`);
+
+        res.status(200).json({ success: true });
+    } catch (err: any) {
+        console.error('Riot Sync Error:', err);
+        if (err.response) {
+            console.error('[📛 응답 코드]', err.response.status);
+            console.error('[📛 응답 바디]', err.response.data);
+        }
+        res.status(500).json({ success: false, message: '서버 오류' });
     }
 };

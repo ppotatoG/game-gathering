@@ -20,9 +20,9 @@ export const saveAuctionUsers = async (
     return res.data;
 };
 
-export const getAuctionUsers = async (code: string): Promise<AuctionUser[]> => {
+export const getAuctionUsers = async (code: string): Promise<GetAuctionUsersResponse> => {
     const res = await $axios.get(`/api/auction/${code}/users`);
-    return res.data.users;
+    return res.data;
 };
 
 export const fetchRiotDataForUsers = async (code: string): Promise<void> => {
