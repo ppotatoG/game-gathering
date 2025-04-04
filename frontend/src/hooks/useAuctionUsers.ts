@@ -40,6 +40,24 @@ export const useAuctionUsers = (code: string) => {
         await fetchRiotDataForUsers(code);
     }, [code]);
 
+    const importUsersFromText = useCallback(
+        async (text: string) => {
+            const lines = text
+                .split('\n')
+                .map(line => line.replace(/^\d+\.\s*/, '').trim()) // 앞 번호 제거
+                .filter(Boolean);
+
+            const parsed = lines.map(line => {
+                const [nickname, tag] = line.split('#').map(s => s.trim());
+                return { nickname, tag };
+            });
+
+            await saveAuctionUsers(code, parsed);
+            await fetchUsers();
+        },
+        [code]
+    );
+
     useEffect(() => {
         if (code) fetchUsers();
     }, [code, fetchUsers]);
@@ -49,6 +67,7 @@ export const useAuctionUsers = (code: string) => {
         riotFetched,
         importUsersFromExcel,
         deleteUsers,
-        updateUserWithRiotData
+        updateUserWithRiotData,
+        importUsersFromText
     };
 };

@@ -1,27 +1,19 @@
-import { Box, Button, Typography, Stack, Paper } from '@mui/material';
+import { Box, Button, Typography, Stack, Paper, TextField } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { useRef } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useAuctionUsers } from '@/hooks/useAuctionUsers';
 
 const AdminPage = () => {
     const { code } = useParams<{ code: string }>();
-    const fileInputRef = useRef<HTMLInputElement>(null);
-
-    const { importUsersFromExcel, updateUserWithRiotData, users, deleteUsers } = useAuctionUsers(
+    const [rawText, setRawText] = useState('');
+    const { importUsersFromText, updateUserWithRiotData, users, deleteUsers } = useAuctionUsers(
         code || ''
     );
 
-    const handleExcelUpload = () => {
-        fileInputRef.current?.click();
-    };
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            importUsersFromExcel(file);
-        }
+    const handleTextSubmit = () => {
+        importUsersFromText(rawText);
     };
 
     const columns: GridColDef[] = [
@@ -37,38 +29,44 @@ const AdminPage = () => {
 
     return (
         <Box p={4}>
-            <Typography variant="h5" gutterBottom>
-                경매 관리자 페이지
-            </Typography>
+            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+                <Typography variant="h5" mb={2}>
+                    경매 관리자 페이지
+                </Typography>
+                <Stack direction="row" spacing={2}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleTextSubmit}
+                        disabled={!rawText}
+                    >
+                        유저 등록
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="error"
+                        onClick={deleteUsers}
+                        disabled={users.length === 0}
+                    >
+                        유저 초기화
+                    </Button>
+                </Stack>
+            </Stack>
 
-            <Stack direction="row" spacing={2} mb={2}>
-                <Button variant="outlined" onClick={handleExcelUpload}>
-                    엑셀 업로드
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={updateUserWithRiotData}
-                    disabled={true}
-                >
-                    라이엇 정보 갱신
-                </Button>
-                <Button variant="contained" color="error" onClick={deleteUsers}>
-                    유저 초기화
-                </Button>
+            <Stack spacing={2} mb={2}>
+                <TextField
+                    label="유저 텍스트 입력 (순서. 닉네임#태그)"
+                    multiline
+                    fullWidth
+                    rows={10}
+                    value={rawText}
+                    onChange={e => setRawText(e.target.value)}
+                />
             </Stack>
 
             <Paper elevation={2} sx={{ p: 2, height: 400 }}>
                 <DataGrid rows={rows} columns={columns} disableRowSelectionOnClick />
             </Paper>
-
-            <input
-                ref={fileInputRef}
-                type="file"
-                accept=".xlsx, .xls"
-                onChange={handleFileChange}
-                style={{ display: 'none' }}
-            />
         </Box>
     );
 };
