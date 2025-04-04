@@ -1,6 +1,7 @@
 console.log('✅ auctionRouter loaded');
 
 import { Router } from 'express';
+import { Server } from 'socket.io';
 
 import {
     createAuction,
@@ -8,14 +9,20 @@ import {
     saveAuctionUsers,
     getAuctionUsers,
     syncRiotData,
+    createAuctionStartHandler,
 } from '@/controllers/auctionController';
 
-const router = Router();
+export default function auctionRouter(io: Server) {
+    const router = Router();
 
-router.post('/create', createAuction);
-router.post('/admin-login', adminLogin);
-router.post('/:code/users', saveAuctionUsers);
-router.get('/:code/users', getAuctionUsers);
-router.patch('/:code/users/riot', syncRiotData);
+    router.post('/create', createAuction);
+    router.post('/admin-login', adminLogin);
 
-export default router;
+    router.post('/:code/users', saveAuctionUsers);
+    router.get('/:code/users', getAuctionUsers);
+    router.patch('/:code/users/riot', syncRiotData);
+
+    router.post('/start', createAuctionStartHandler(io));
+
+    return router;
+}

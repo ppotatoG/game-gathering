@@ -46,3 +46,31 @@ export interface DefaultResponse {
     success: boolean;
     message?: string;
 }
+
+export interface AuctionBid {
+    user: string;
+    point: number;
+    teamId: string;
+}
+
+export interface AuctionLog {
+    auctionId: string;
+    round: number;
+    targetUser: string;
+    selectedBy: string;
+    bid: AuctionBid[];
+    status: 'pending' | 'confirmed';
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface AuctionStartPayload {
+    auctionId: string;
+    round: number;
+    targetUser: string;
+}
+
+export interface AuctionInputPayload {
+    auctionId: string;
+    bid: AuctionBid;
+}
