@@ -7,7 +7,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { Server } from 'socket.io';
 
-import auctionRouter from './routes/auction';
+import auctionRouter from '@/routes/auction';
+import auctionSocket from '@/sockets/auction.socket';
 
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
 
@@ -26,19 +27,9 @@ const io = new Server(server, {
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/auction', auctionRouter);
+app.use('/api/auction', auctionRouter(io));
 
-io.on('connection', socket => {
-    console.log('🔌 User connected:', socket.id);
-
-    socket.on('chatMessage', data => {
-        io.emit('chatMessage', data);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('❌ User disconnected:', socket.id);
-    });
-});
+auctionSocket(io);
 
 console.log('💬 MONGO_URI:', MONGO_URI);
 
