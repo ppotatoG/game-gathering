@@ -74,7 +74,9 @@ export const adminLogin = async (
             return;
         }
 
-        res.status(200).json({ success: true, data: { code } });
+        const { adminPasswordHash, ...safeAuction } = auction;
+
+        res.status(200).json({ success: true, data: safeAuction });
         return;
     } catch (err) {
         console.error('Admin Login Error:', err);
