@@ -15,9 +15,9 @@ export const useAdminLogin = (code: string) => {
 
     const handleSubmit = useCallback(async () => {
         try {
-            const data = await adminLogin(code, form.adminPassword);
-            if (data.success) {
-                setAdmin(code);
+            const res = await adminLogin(code, form.adminPassword);
+            if (res.success) {
+                setAdmin(res.data);
                 navigate(`/auction/${code}/admin`);
             }
         } catch (err) {
