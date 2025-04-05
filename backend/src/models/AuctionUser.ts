@@ -8,6 +8,7 @@ export interface AuctionUserData {
     mainRole?: string | null;
     subRole?: string | null;
     mostChampion?: string | null;
+    isCaptain?: boolean;
 }
 
 export interface AuctionUserDocument extends Document {
@@ -30,6 +31,7 @@ const AuctionUserSchema = new Schema<AuctionUserDocument>(
                 mainRole: { type: String, default: null },
                 subRole: { type: String, default: null },
                 mostChampion: { type: String, default: null },
+                isCaptain: { type: Boolean, default: false },
             },
         ],
         createdAt: { type: Date, default: Date.now },
