@@ -31,7 +31,7 @@ const router = createBrowserRouter([
         element: <DefaultLayout />,
         children: [
             {
-                path: '/auction',
+                path: '/auction/:code',
                 element: <Auction />
             },
             {
