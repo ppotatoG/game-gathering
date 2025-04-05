@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 
+import Auction from '@/models/Auction';
 import AuctionUser from '@/models/AuctionUser';
 import {
     AuctionUserInput,
@@ -68,6 +69,46 @@ export const getAuctionUsers = async (
         console.error('Get Users Error:', err);
         res.status(500).json({ success: false, message: '서버 오류' });
         return;
+    }
+};
+
+export const updateCaptains = async (
+    req: Request<{ code: string }, any, { captains: string[] }>,
+    res: Response
+) => {
+    try {
+        const { code } = req.params;
+        const { captains } = req.body;
+
+        if (!Array.isArray(captains)) {
+            return res.status(400).json({ success: false, message: '캡틴 목록이 필요합니다.' });
+        }
+
+        const auction = await Auction.findOne({ code });
+        if (!auction) {
+            return res.status(404).json({ success: false, message: '경매 없음' });
+        }
+
+        if (captains.length > auction.captainCount) {
+            return res.status(400).json({ success: false, message: '캡틴 수 초과' });
+        }
+
+        const doc = await AuctionUser.findOne({ code });
+        if (!doc || !doc.users) {
+            return res.status(404).json({ success: false, message: '유저 없음' });
+        }
+
+        doc.users = doc.users.map(user => ({
+            ...user,
+            isCaptain: captains.includes(user.nickname),
+        }));
+
+        await doc.save();
+
+        return res.status(200).json({ success: true });
+    } catch (err) {
+        console.error('Update Captains Error:', err);
+        return res.status(500).json({ success: false, message: '서버 오류' });
     }
 };
 

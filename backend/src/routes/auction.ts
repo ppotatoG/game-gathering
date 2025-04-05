@@ -9,6 +9,7 @@ import {
     saveAuctionUsers,
     getAuctionUsers,
     syncRiotData,
+    updateCaptains,
     createAuctionStartHandler,
 } from '@/controllers/auctionController';
 
@@ -21,6 +22,7 @@ export default function auctionRouter(io: Server) {
     router.post('/:code/users', saveAuctionUsers);
     router.get('/:code/users', getAuctionUsers);
     router.patch('/:code/users/riot', syncRiotData);
+    router.patch('/:code/users/captains', updateCaptains);
 
     router.post('/start', createAuctionStartHandler(io));
 
