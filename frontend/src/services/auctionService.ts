@@ -25,6 +25,10 @@ export const getAuctionUsers = async (code: string): Promise<GetAuctionUsersResp
     return res.data;
 };
 
+export const updateCaptains = async (code: string, captains: string[]) => {
+    await $axios.patch(`/api/auction/${code}/users/captains`, { captains });
+};
+
 export const fetchRiotDataForUsers = async (code: string): Promise<void> => {
     await $axios.patch(`/api/auction/${code}/users/riot`);
 };

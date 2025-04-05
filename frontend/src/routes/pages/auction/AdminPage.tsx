@@ -4,21 +4,57 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useAuctionUsers } from '@/hooks/useAuctionUsers';
+import { useAdminStore } from '@/store/useAdmin';
 
 const AdminPage = () => {
     const { code } = useParams<{ code: string }>();
     const [rawText, setRawText] = useState('');
-    const { importUsersFromText, updateUserWithRiotData, users, deleteUsers } = useAuctionUsers(
-        code || ''
-    );
+    const [selectedCaptains, setSelectedCaptains] = useState<Set<string>>(new Set());
+
+    const { users, importUsersFromText, deleteUsers, saveCaptains } = useAuctionUsers(code || '');
+    const { auctionInfo } = useAdminStore();
 
     const handleTextSubmit = () => {
         importUsersFromText(rawText);
     };
 
+    const handleCaptainToggle = (nickname: string) => {
+        setSelectedCaptains(prev => {
+            const next = new Set(prev);
+            next.has(nickname) ? next.delete(nickname) : next.add(nickname);
+            return next;
+        });
+    };
+
+    const handleSaveCaptains = () => {
+        saveCaptains(Array.from(selectedCaptains));
+    };
+
     const columns: GridColDef[] = [
         { field: 'nickname', headerName: '닉네임', width: 150 },
-        { field: 'tag', headerName: '태그', width: 150 }
+        { field: 'tag', headerName: '태그', width: 150 },
+        {
+            field: 'isCaptain',
+            headerName: '팀장 지정',
+            width: 120,
+            renderCell: params => {
+                const nickname = params.row.nickname;
+                const selected = selectedCaptains.has(nickname);
+                const disabled =
+                    !selected && selectedCaptains.size >= (auctionInfo?.captainCount || 0);
+
+                return (
+                    <Button
+                        size="small"
+                        variant={selected ? 'contained' : 'outlined'}
+                        onClick={() => handleCaptainToggle(nickname)}
+                        disabled={disabled}
+                    >
+                        👑
+                    </Button>
+                );
+            }
+        }
     ];
 
     const rows = users.map((user, index) => ({
@@ -30,9 +66,7 @@ const AdminPage = () => {
     return (
         <Box p={4}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-                <Typography variant="h5" mb={2}>
-                    경매 관리자 페이지
-                </Typography>
+                <Typography variant="h5">경매 관리자 페이지</Typography>
                 <Stack direction="row" spacing={2}>
                     <Button
                         variant="contained"
@@ -49,6 +83,9 @@ const AdminPage = () => {
                         disabled={users.length === 0}
                     >
                         유저 초기화
+                    </Button>
+                    <Button variant="contained" color="success" onClick={handleSaveCaptains}>
+                        팀장 저장
                     </Button>
                 </Stack>
             </Stack>

@@ -3,7 +3,8 @@ import { useEffect, useState, useCallback } from 'react';
 import {
     saveAuctionUsers,
     getAuctionUsers,
-    fetchRiotDataForUsers
+    fetchRiotDataForUsers,
+    updateCaptains
 } from '@/services/auctionService';
 import { parseAuctionExcel } from '@/utils/excel';
 
@@ -58,6 +59,14 @@ export const useAuctionUsers = (code: string) => {
         [code]
     );
 
+    const saveCaptains = useCallback(
+        async (captains: string[]) => {
+            await updateCaptains(code, captains);
+            await fetchUsers();
+        },
+        [code, fetchUsers]
+    );
+
     useEffect(() => {
         if (code) fetchUsers();
     }, [code, fetchUsers]);
@@ -68,6 +77,7 @@ export const useAuctionUsers = (code: string) => {
         importUsersFromExcel,
         deleteUsers,
         updateUserWithRiotData,
-        importUsersFromText
+        importUsersFromText,
+        saveCaptains
     };
 };
