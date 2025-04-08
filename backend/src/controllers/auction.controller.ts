@@ -74,7 +74,7 @@ export const adminLogin = async (
             return;
         }
 
-        const { adminPasswordHash, ...safeAuction } = auction;
+        const { adminPasswordHash, ...safeAuction } = auction.toObject();
 
         res.status(200).json({ success: true, data: safeAuction });
         return;
