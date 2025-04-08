@@ -65,6 +65,7 @@ const CreateAuctionPage = () => {
                     onChange={handleChange}
                     fullWidth
                     required
+                    type="password"
                 />
 
                 <Button type="submit" variant="contained" color="primary">
