@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 import Auction from '@/models/Auction';
-import AuctionUser from '@/models/AuctionUser';
+import AuctionUser, { AuctionUserDocument } from '@/models/AuctionUser';
 import {
     AuctionUserInput,
     BulkSaveResponse,
@@ -93,7 +93,8 @@ export const updateCaptains = async (
             return res.status(400).json({ success: false, message: '캡틴 수 초과' });
         }
 
-        const doc = await AuctionUser.findOne({ code });
+        const doc = (await AuctionUser.findOne({ code })) as AuctionUserDocument | null;
+
         if (!doc || !doc.users) {
             return res.status(404).json({ success: false, message: '유저 없음' });
         }
