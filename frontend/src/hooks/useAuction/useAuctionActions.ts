@@ -16,5 +16,9 @@ export const useAuctionActions = ({ code, nickname }: { code: string; nickname: 
         });
     };
 
-    return { emitStart, emitBid };
+    const emitNextUser = () => {
+        socket.emit('auction:next-user', { auctionCode: code });
+    };
+
+    return { emitStart, emitBid, emitNextUser };
 };
