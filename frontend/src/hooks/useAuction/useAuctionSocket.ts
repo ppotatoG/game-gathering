@@ -13,7 +13,7 @@ export const useAuctionSocket = ({
 }) => {
     useEffect(() => {
         socket.on('auction:show-user', data => {
-            setTargetUser(data.targetUser);
+            setTargetUser(data);
             setBids([]);
         });
 
