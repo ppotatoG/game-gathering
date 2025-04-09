@@ -30,6 +30,7 @@ interface AuctionUserInput {
 interface AuctionUserData {
     nickname: string;
     tag: string;
+    isCaptain: boolean;
 }
 
 interface GetAuctionUsersResponse {

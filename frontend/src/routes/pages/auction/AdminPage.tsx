@@ -38,15 +38,14 @@ const AdminPage = () => {
             headerName: '팀장 지정',
             width: 120,
             renderCell: params => {
-                const nickname = params.row.nickname;
-                const selected = selectedCaptains.has(nickname);
+                const { nickname, isCaptain } = params.row;
                 const disabled =
-                    !selected && selectedCaptains.size >= (auctionInfo?.captainCount || 0);
+                    !isCaptain && selectedCaptains.size >= (auctionInfo?.captainCount || 0);
 
                 return (
                     <Button
                         size="small"
-                        variant={selected ? 'contained' : 'outlined'}
+                        variant={isCaptain ? 'contained' : 'outlined'}
                         onClick={() => handleCaptainToggle(nickname)}
                         disabled={disabled}
                     >
@@ -60,7 +59,8 @@ const AdminPage = () => {
     const rows = users.map((user, index) => ({
         id: index + 1,
         nickname: user.nickname,
-        tag: user.tag
+        tag: user.tag,
+        isCaptain: user.isCaptain
     }));
 
     return (
