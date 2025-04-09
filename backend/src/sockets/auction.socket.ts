@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io';
 
-import registerAuctionHandlers from './handlers/auctionHandler';
+import registerAuctionHandlers from './handlers/auction';
 import registerChatHandler from './handlers/chatHandler';
 import registerConnectionHandlers from './handlers/connectionHandler';
 
