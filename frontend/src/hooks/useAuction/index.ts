@@ -12,7 +12,7 @@ export function useAuction() {
     const [selectedUser, setSelectedUser] = useState<any>(null);
     const [bids, setBids] = useState<any[]>([]);
 
-    const { emitStart, emitBid } = useAuctionActions({ code, nickname });
+    const { emitStart, emitBid, emitNextUser } = useAuctionActions({ code, nickname });
 
     useAuctionSocket({ setTargetUser, setBids, setSelectedUser });
 
@@ -27,6 +27,7 @@ export function useAuction() {
         selectedUser,
         bids,
         emitStart,
-        emitBid
+        emitBid,
+        emitNextUser
     };
 }
