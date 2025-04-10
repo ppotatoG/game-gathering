@@ -81,22 +81,26 @@ export const updateCaptains = async (
         const { captains } = req.body;
 
         if (!Array.isArray(captains)) {
-            return res.status(400).json({ success: false, message: '캡틴 목록이 필요합니다.' });
+            res.status(400).json({ success: false, message: '캡틴 목록이 필요합니다.' });
+            return;
         }
 
         const auction = await Auction.findOne({ code });
         if (!auction) {
-            return res.status(404).json({ success: false, message: '경매 없음' });
+            res.status(404).json({ success: false, message: '경매 없음' });
+            return;
         }
 
         if (captains.length > auction.captainCount) {
-            return res.status(400).json({ success: false, message: '캡틴 수 초과' });
+            res.status(400).json({ success: false, message: '캡틴 수 초과' });
+            return;
         }
 
         const doc = (await AuctionUser.findOne({ code })) as AuctionUserDocument | null;
 
         if (!doc || !doc.users) {
-            return res.status(404).json({ success: false, message: '유저 없음' });
+            res.status(404).json({ success: false, message: '유저 없음' });
+            return;
         }
 
         doc.users = doc.users.map(user => ({
@@ -106,10 +110,12 @@ export const updateCaptains = async (
 
         await doc.save();
 
-        return res.status(200).json({ success: true });
+        res.status(200).json({ success: true });
+        return;
     } catch (err) {
         console.error('Update Captains Error:', err);
-        return res.status(500).json({ success: false, message: '서버 오류' });
+        res.status(500).json({ success: false, message: '서버 오류' });
+        return;
     }
 };
 
