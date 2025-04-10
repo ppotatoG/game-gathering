@@ -8,13 +8,13 @@ export function useAuction() {
     const { shouldAskNickname, code, nickname, setNickname, joined, handleJoin } =
         useAuctionState();
 
-    const [targetUser, setTargetUser] = useState<string | null>(null);
-    const [selectedUser, setSelectedUser] = useState<any>(null);
-    const [bids, setBids] = useState<any[]>([]);
+    const [currentAuctionTarget, setTargetUser] = useState<AuctionUserData | null>(null);
+    const [auctionState, setAuctionState] = useState<AuctionState | null>(null);
+    const [bids, setBids] = useState<Bid[]>([]);
 
     const { emitStart, emitBid, emitNextUser } = useAuctionActions({ code, nickname });
 
-    useAuctionSocket({ setTargetUser, setBids, setSelectedUser });
+    useAuctionSocket({ setTargetUser, setBids, setAuctionState });
 
     return {
         shouldAskNickname,
@@ -23,8 +23,8 @@ export function useAuction() {
         setNickname,
         joined,
         handleJoin,
-        targetUser,
-        selectedUser,
+        currentAuctionTarget,
+        auctionState,
         bids,
         emitStart,
         emitBid,

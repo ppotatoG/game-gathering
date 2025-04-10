@@ -5,11 +5,11 @@ import socket from '@/lib/socket';
 export const useAuctionSocket = ({
     setTargetUser,
     setBids,
-    setSelectedUser
+    setAuctionState
 }: {
-    setTargetUser: (val: string) => void;
-    setBids: (val: any[]) => void;
-    setSelectedUser: (val: any) => void;
+    setTargetUser: (val: AuctionUserData) => void;
+    setBids: (val: Bid[]) => void;
+    setAuctionState: (val: AuctionState) => void;
 }) => {
     useEffect(() => {
         socket.on('auction:show-user', data => {
@@ -18,7 +18,7 @@ export const useAuctionSocket = ({
         });
 
         socket.on('auction:selected', data => {
-            setSelectedUser(data);
+            setAuctionState(data);
         });
 
         return () => {

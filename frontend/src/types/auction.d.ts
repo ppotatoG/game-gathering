@@ -30,12 +30,33 @@ interface AuctionUserInput {
 interface AuctionUserData {
     nickname: string;
     tag: string;
-    isCaptain: boolean;
+    riotFetched: boolean;
+    riotFetchedAt: Date | null;
+    mainRole?: string | null;
+    subRole?: string | null;
+    mostChampion?: string | null;
+    isCaptain?: boolean;
 }
 
 interface GetAuctionUsersResponse {
     success: boolean;
+    code: string;
     users: AuctionUserData[];
+    createdAt: Date;
     riotFetched: boolean;
-    riotFetchedAt: string | null;
+    riotFetchedAt: Date | null;
+}
+
+interface Bid {
+    nickname: string;
+    point: number;
+    teamId: string;
+}
+
+interface AuctionState {
+    currentTarget: AuctionUserData | null;
+    captainBids: Bid[];
+    selectedUsers: AuctionUserData[];
+    round: number;
+    isFinished: boolean;
 }

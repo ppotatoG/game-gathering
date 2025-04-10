@@ -15,9 +15,9 @@ export default function Auction() {
         nickname,
         setNickname,
         handleJoin,
-        selectedUser,
+        bids,
         emitNextUser,
-        targetUser
+        currentAuctionTarget
     } = useAuction();
 
     if (shouldAskNickname) {
@@ -58,7 +58,7 @@ export default function Auction() {
                     경매 대상 유저 선택 (테스트)
                 </Button>
                 <Typography variant="h6" gutterBottom>
-                    경매 대상: {targetUser?.nickname || '아직 선택되지 않았습니다.'}
+                    경매 대상: {currentAuctionTarget?.nickname || '아직 선택되지 않았습니다.'}
                 </Typography>
             </Grid2>
             <Grid2 container spacing={2} padding={2}>
@@ -88,20 +88,10 @@ export default function Auction() {
                     <Typography variant="h6" gutterBottom>
                         팀 정보
                     </Typography>
-                    {selectedUser ? (
-                        <>
-                            <Typography>🏷️ 대상자: {selectedUser.targetUser}</Typography>
-                            <Typography>✅ 낙찰: {selectedUser.selectedBy}</Typography>
-                            <Divider sx={{ my: 1 }} />
-                            <Typography variant="subtitle2" gutterBottom>
-                                💰 입찰 현황
-                            </Typography>
-                            {selectedUser.bid.map((b: any, i: number) => (
-                                <Box key={i}>
-                                    • {b.user} ({b.teamId}) - {b.point}p
-                                </Box>
-                            ))}
-                        </>
+                    {bids.length ? (
+                        bids.map((bid, idx) => (
+                            <Typography key={idx}>🏷️ 대상자: {bid.nickname}</Typography>
+                        ))
                     ) : (
                         <Typography variant="body2">아직 낙찰된 팀원이 없습니다.</Typography>
                     )}
