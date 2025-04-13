@@ -17,21 +17,17 @@ export default function handleNextUser(io: Server, socket: Socket) {
                 return;
             }
 
-            let state = auctionStateMap.get(auctionCode);
+            const state = auctionStateMap.get(auctionCode);
             if (!state) {
-                state = {
-                    currentTarget: null,
-                    captainBids: [],
-                    selectedUsers: [],
-                    round: 0,
-                    isFinished: false,
-                };
-                auctionStateMap.set(auctionCode, state);
-            }
-            if (state.isFinished) {
-                socket.emit('error', '경매가 종료되었거나 초기화되지 않았습니다.');
+                socket.emit('error', '경매 상태가 초기화되지 않았습니다.');
                 return;
             }
+
+            if (state.isFinished) {
+                socket.emit('error', '경매가 종료되었습니다.');
+                return;
+            }
+
             const remaining = getRemainingUsers(doc.users, state.selectedUsers);
             console.log('[BACK] 남은 유저 수:', remaining.length);
 
