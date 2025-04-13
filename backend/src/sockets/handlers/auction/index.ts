@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io';
 
-import handleNextUser from './nextUser';
+import handleNextUser from './handleNextUser';
 
 import { handleAuctionStart, handleAuctionInput } from '@/controllers/auctionController';
 
