@@ -6,12 +6,17 @@ interface Bid {
     teamId: string;
 }
 
-interface AuctionState {
+export interface CaptainPoints {
+    [nickname: string]: number;
+}
+
+export interface AuctionState {
     currentTarget: AuctionUserData | null;
     captainBids: Bid[];
     selectedUsers: AuctionUserData[];
     round: number;
     isFinished: boolean;
+    captainPoints: CaptainPoints;
 }
 
 export const auctionStateMap = new Map<string, AuctionState>();
