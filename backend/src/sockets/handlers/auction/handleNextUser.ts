@@ -54,8 +54,27 @@ export default function handleNextUser(io: Server, socket: Socket) {
             };
 
             auctionStateMap.set(auctionCode, updatedState);
+
+            const {
+                nickname,
+                tag,
+                riotFetched,
+                riotFetchedAt,
+                mainRole,
+                subRole,
+                mostChampion,
+                isCaptain,
+            } = selectedUser;
+
             io.to(auctionCode).emit('auction:show-user', {
-                ...selectedUser,
+                nickname,
+                tag,
+                riotFetched,
+                riotFetchedAt,
+                mainRole,
+                subRole,
+                mostChampion,
+                isCaptain,
                 round: state.round,
             });
         } catch (err) {
