@@ -7,7 +7,7 @@ import AuctionUser, { AuctionUserDocument } from '@/models/AuctionUser';
 const DEFAULT_CAPTAIN_POINTS = 1000;
 
 export default function handleInitAuction(io: Server, socket: Socket) {
-    socket.on('auction:init', async ({ auctionCode }) => {
+    socket.on('auction:reset', async ({ auctionCode }) => {
         if (!auctionCode) {
             socket.emit('error', 'auctionCode가 필요합니다.');
             return;
@@ -38,6 +38,6 @@ export default function handleInitAuction(io: Server, socket: Socket) {
         });
 
         console.log('[소켓] 경매 상태 초기화 완료:', auctionCode);
-        socket.emit('auction:initialized');
+        socket.emit('auction:reset-complete');
     });
 }
