@@ -27,14 +27,26 @@ export default function handleFinalizeAuction(io: Server, socket: Socket) {
             return;
         }
 
-        console.log('[소켓] 낙찰 확정:', nickname, '→', auctionCode);
+        const availablePoint = state.captainPoints[nickname];
+        if (selected.point > availablePoint) {
+            socket.emit('error', `보유 포인트(${availablePoint})보다 높은 입찰은 불가능합니다.`);
+            return;
+        }
 
-        // 낙찰 정보는 broadcast
+        state.captainPoints[nickname] -= selected.point;
+
+        console.log(
+            '[소켓] 낙찰 확정:',
+            nickname,
+            '→',
+            auctionCode,
+            `(남은 포인트: ${state.captainPoints[nickname]})`
+        );
+
         io.to(auctionCode).emit('auction:finalized', {
             target: state.currentTarget,
             winner: selected,
+            remainingPoint: state.captainPoints[nickname],
         });
-
-        // 이후에 DB 저장은 따로 추가
     });
 }
