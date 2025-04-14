@@ -1,11 +1,15 @@
 import { Server, Socket } from 'socket.io';
 
+import handleFinalizeAuction from './handleFinalizeAuction';
+import handleInitAuction from './handleInitAuction';
+import handleInputBid from './handleInputBid';
 import handleNextUser from './handleNextUser';
-
-import { handleAuctionStart, handleAuctionInput } from '@/controllers/auctionController';
+import handleStartBid from './handleStartBid';
 
 export default function registerAuctionHandlers(io: Server, socket: Socket) {
-    socket.on('auction:start', data => handleAuctionStart(io, socket, data));
-    socket.on('auction:input', data => handleAuctionInput(io, socket, data));
+    handleInitAuction(io, socket);
     handleNextUser(io, socket);
+    handleStartBid(io, socket);
+    handleInputBid(io, socket);
+    handleFinalizeAuction(io, socket);
 }
