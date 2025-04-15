@@ -1,8 +1,11 @@
-import { Box, Typography, Divider, TextField, Button } from '@mui/material';
+import { Typography } from '@mui/material';
 import Grid2 from '@mui/material/Grid2';
 import { useParams } from 'react-router-dom';
 
+import AdminControls from '@/components/Auction/AdminControls';
+import AuctionUserTable from '@/components/Auction/AuctionUserTable';
 import ChatBox from '@/components/Auction/ChatBox';
+import NicknameInput from '@/components/Auction/NicknameInput';
 import { useAuction } from '@/hooks/useAuction';
 import { useAuctionUsers } from '@/hooks/useAuctionUsers';
 
@@ -11,79 +14,44 @@ export default function Auction() {
     const { users } = useAuctionUsers(code || '');
 
     const {
+        isAdmin,
         shouldAskNickname,
         nickname,
         setNickname,
         handleJoin,
         bids,
         emitNextUser,
-        currentAuctionTarget
+        currentAuctionTarget,
+        emitInit,
+        emitBid,
+        chatMessages
     } = useAuction();
 
     if (shouldAskNickname) {
         return (
-            <Box p={4} textAlign="center">
-                <Typography variant="h6" gutterBottom>
-                    닉네임을 입력하고 입장하세요
-                </Typography>
-                <TextField
-                    value={nickname}
-                    onChange={e => setNickname(e.target.value)}
-                    onKeyDown={e => {
-                        if (e.key === 'Enter' && nickname.trim()) {
-                            handleJoin();
-                        }
-                    }}
-                    label="닉네임"
-                    size="small"
-                    sx={{ mt: 2, mb: 2, width: 300 }}
-                />
-                <br />
-                <Button
-                    variant="contained"
-                    onClick={handleJoin}
-                    disabled={!nickname.trim()}
-                    sx={{ width: 300 }}
-                >
-                    입장하기
-                </Button>
-            </Box>
+            <NicknameInput nickname={nickname} setNickname={setNickname} handleJoin={handleJoin} />
         );
     }
 
     return (
         <>
+            {isAdmin && (
+                <AdminControls
+                    emitInit={emitInit}
+                    emitNextUser={emitNextUser}
+                    currentAuctionTarget={currentAuctionTarget}
+                />
+            )}
             <Grid2 container spacing={2} padding={2}>
-                <Button variant="outlined" onClick={emitNextUser} sx={{ mt: 2 }}>
-                    경매 대상 유저 선택 (테스트)
-                </Button>
-                <Typography variant="h6" gutterBottom>
-                    경매 대상: {currentAuctionTarget?.nickname || '아직 선택되지 않았습니다.'}
-                </Typography>
-            </Grid2>
-            <Grid2 container spacing={2} padding={2}>
-                {/* 왼쪽: 유저 리스트 */}
+                <AuctionUserTable users={users} currentTarget={currentAuctionTarget} />
+
                 <Grid2 size="grow">
-                    <Typography variant="h6" gutterBottom>
-                        내전 코드: {code}
+                    <Typography variant="h6" gutterBottom sx={{ ml: 2 }}>
+                        경매 대상: {currentAuctionTarget?.nickname || '아직 선택되지 않았습니다.'}
                     </Typography>
-                    <Divider sx={{ mb: 1 }} />
-                    {users.map((user, idx) => (
-                        <Box key={`${user.nickname}-${idx}`} sx={{ mb: 0.5 }}>
-                            • {user.nickname}#{user.tag}
-                        </Box>
-                    ))}
+                    <ChatBox nickname={nickname} emitBid={emitBid} messages={chatMessages} />
                 </Grid2>
 
-                {/* 중앙: 채팅 */}
-                <Grid2 size="grow">
-                    <Typography variant="h6" gutterBottom>
-                        채팅
-                    </Typography>
-                    <ChatBox nickname={nickname} />
-                </Grid2>
-
-                {/* 오른쪽: 낙찰 정보 */}
                 <Grid2 size="grow">
                     <Typography variant="h6" gutterBottom>
                         팀 정보
