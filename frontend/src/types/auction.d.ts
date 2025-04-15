@@ -36,6 +36,7 @@ interface AuctionUserData {
     subRole?: string | null;
     mostChampion?: string | null;
     isCaptain?: boolean;
+    tier: string | null;
 }
 
 interface GetAuctionUsersResponse {
@@ -59,4 +60,10 @@ interface AuctionState {
     selectedUsers: AuctionUserData[];
     round: number;
     isFinished: boolean;
+    captainPoints: Record<string, number>;
+}
+
+interface ChatMessage {
+    user: string;
+    message: string;
 }
