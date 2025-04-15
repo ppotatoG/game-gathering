@@ -5,18 +5,20 @@ import { useAuctionSocket } from './useAuctionSocket';
 import { useAuctionState } from './useAuctionState';
 
 export function useAuction() {
-    const { shouldAskNickname, code, nickname, setNickname, joined, handleJoin } =
+    const { isAdmin, shouldAskNickname, code, nickname, setNickname, joined, handleJoin } =
         useAuctionState();
 
     const [currentAuctionTarget, setTargetUser] = useState<AuctionUserData | null>(null);
     const [auctionState, setAuctionState] = useState<AuctionState | null>(null);
     const [bids, setBids] = useState<Bid[]>([]);
+    const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
-    const { emitStart, emitBid, emitNextUser } = useAuctionActions({ code, nickname });
+    const { emitStart, emitBid, emitNextUser, emitInit } = useAuctionActions({ code, nickname });
 
-    useAuctionSocket({ setTargetUser, setBids, setAuctionState });
+    useAuctionSocket({ setTargetUser, setBids, setAuctionState, setChatMessages });
 
     return {
+        isAdmin,
         shouldAskNickname,
         code,
         nickname,
@@ -26,8 +28,10 @@ export function useAuction() {
         currentAuctionTarget,
         auctionState,
         bids,
+        chatMessages,
         emitStart,
         emitBid,
-        emitNextUser
+        emitNextUser,
+        emitInit
     };
 }
