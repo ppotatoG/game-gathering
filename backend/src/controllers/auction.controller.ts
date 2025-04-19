@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
-import { nanoid } from 'nanoid/non-secure';
+import { nanoid } from 'nanoid';
 
 import Auction from '@/models/Auction';
 import {
