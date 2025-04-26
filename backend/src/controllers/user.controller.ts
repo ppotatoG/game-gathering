@@ -53,16 +53,11 @@ export const getAuctionUsers = async (
         const { code } = req.params;
         const doc = await AuctionUser.findOne({ code });
 
-        if (!doc) {
-            res.status(404).json({ success: false, message: '유저 없음' });
-            return;
-        }
-
         res.status(200).json({
             success: true,
-            users: doc.users,
-            riotFetched: doc.riotFetched,
-            riotFetchedAt: doc.riotFetchedAt,
+            users: doc?.users || [],
+            riotFetched: doc?.riotFetched || false,
+            riotFetchedAt: doc?.riotFetchedAt || null,
         });
         return;
     } catch (err) {
