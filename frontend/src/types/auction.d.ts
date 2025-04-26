@@ -25,6 +25,7 @@ interface AuctionCreateResponse {
 interface AuctionUserInput {
     nickname: string;
     tag: string;
+    weight: number;
 }
 
 interface AuctionUserData {
@@ -36,7 +37,7 @@ interface AuctionUserData {
     subRole?: string | null;
     mostChampion?: string | null;
     isCaptain?: boolean;
-    tier: string | null;
+    weight: number;
 }
 
 interface GetAuctionUsersResponse {

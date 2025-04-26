@@ -7,6 +7,7 @@ import {
     updateCaptains
 } from '@/services/auctionService';
 import { parseAuctionExcel } from '@/utils/excel';
+import { parseUserString } from '@/utils/parseUserString';
 
 export const useAuctionUsers = (code: string) => {
     const [users, setUsers] = useState<AuctionUserData[]>([]);
@@ -45,12 +46,12 @@ export const useAuctionUsers = (code: string) => {
         async (text: string) => {
             const lines = text
                 .split('\n')
-                .map(line => line.replace(/^\d+\.\s*/, '').trim()) // 앞 번호 제거
+                .map(line => line.trim())
                 .filter(Boolean);
 
             const parsed = lines.map(line => {
-                const [nickname, tag] = line.split('#').map(s => s.trim());
-                return { nickname, tag };
+                const { nickname, tag, weight } = parseUserString(line);
+                return { nickname, tag, weight };
             });
 
             await saveAuctionUsers(code, parsed);
