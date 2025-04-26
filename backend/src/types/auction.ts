@@ -27,6 +27,7 @@ export interface AdminLoginResponse {
 export interface AuctionUserInput {
     nickname: string;
     tag: string;
+    weight: number;
 }
 
 export interface BulkSaveResponse {

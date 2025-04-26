@@ -3,6 +3,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 export interface AuctionUserData {
     nickname: string;
     tag: string;
+    weight: number;
     riotFetched: boolean;
     riotFetchedAt: Date | null;
     mainRole?: string | null;
@@ -26,6 +27,7 @@ const AuctionUserSchema = new Schema<AuctionUserDocument>(
             {
                 nickname: { type: String, required: true },
                 tag: { type: String, required: true },
+                weight: { type: Number, required: true },
                 riotFetched: { type: Boolean, default: false },
                 riotFetchedAt: { type: Date, default: null },
                 mainRole: { type: String, default: null },
