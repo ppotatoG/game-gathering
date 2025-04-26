@@ -1,17 +1,38 @@
 /**
- * '00 견금여석#KR1' 또는 '겨울#KR1' 형태를 nickname, tag로 변환
- * nickname 앞에 나이 추정값(예: '00', '03')이 있는 경우 제거
+ *  {index}.{공백}{nickname}#{tag}{공백}{tier}
  */
+import { getTierWeight } from './tier';
+
 export const parseUserString = (raw: string): AuctionUserInput => {
-    const [nicknameRaw, tagRaw] = raw.split('#');
-    const tag = tagRaw?.trim();
+    const dotIndex = raw.indexOf('.');
 
-    const nameParts = nicknameRaw.trim().split(' ');
+    if (dotIndex === -1) {
+        throw new Error('Invalid format: missing "."');
+    }
 
-    const maybeBirth = nameParts[0];
-    const nickname = /^[0-9]{2}$/.test(maybeBirth)
-        ? nameParts.slice(1).join(' ').trim()
-        : nameParts.join(' ').trim();
+    const afterDot = raw.slice(dotIndex + 1).trim();
+    const [nicknamePart, tagTierPart] = afterDot.split('#');
 
-    return { nickname, tag };
+    if (!tagTierPart) {
+        throw new Error('Invalid format: missing "#" and tag/tier');
+    }
+
+    const nickname = nicknamePart.trim();
+    const [tag, tier] = tagTierPart.trim().split(' ');
+
+    if (!tier) {
+        throw new Error('Invalid format: missing tier');
+    }
+
+    const weight = getTierWeight(tier);
+
+    if (weight === -1) {
+        throw new Error(`Invalid tier format: ${tier}`);
+    }
+
+    return {
+        nickname,
+        tag,
+        weight
+    };
 };
