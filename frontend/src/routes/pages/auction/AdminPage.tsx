@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 
 import { useAuctionUsers } from '@/hooks/useAuctionUsers';
 import { useAdminStore } from '@/store/useAdmin';
+import { getTierFromWeight } from '@/utils/tier';
 
 const AdminPage = () => {
     const { code } = useParams<{ code: string }>();
@@ -33,6 +34,7 @@ const AdminPage = () => {
     const columns: GridColDef[] = [
         { field: 'nickname', headerName: '닉네임', width: 150 },
         { field: 'tag', headerName: '태그', width: 150 },
+        { field: 'tier', headerName: '티어', width: 100 }, // ✨ 추가
         {
             field: 'isCaptain',
             headerName: '팀장 지정',
@@ -60,6 +62,7 @@ const AdminPage = () => {
         id: index + 1,
         nickname: user.nickname,
         tag: user.tag,
+        tier: getTierFromWeight(user.weight),
         isCaptain: user.isCaptain
     }));
 
