@@ -43,6 +43,26 @@ export interface AuctionState {
      * 각 팀장별 남은 포인트 (초기값 1000)
      */
     captainPoints: CaptainPoints;
+    /**
+     * 경매 준비 완료 여부
+     */
+
+    isReady: boolean;
+
+    /**
+     * 경매 시작 여부
+     */
+    isBidding: boolean;
+
+    /**
+     * 경매 종료 시간 (타이머)
+     */
+    timerId?: NodeJS.Timeout;
+
+    /**
+     * 경매 종료 시간 (타이머)
+     * */
+    endAt?: number;
 }
 
 export const auctionStateMap = new Map<string, AuctionState>();
