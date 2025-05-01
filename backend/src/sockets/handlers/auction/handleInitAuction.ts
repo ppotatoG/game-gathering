@@ -35,6 +35,10 @@ export default function handleInitAuction(io: Server, socket: Socket) {
             round: 0,
             isFinished: false,
             captainPoints,
+            isReady: false,
+            isBidding: false,
+            timerId: undefined,
+            endAt: undefined,
         });
 
         console.log('[소켓] 경매 상태 초기화 완료:', auctionCode);
