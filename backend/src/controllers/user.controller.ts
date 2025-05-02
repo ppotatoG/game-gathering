@@ -1,20 +1,21 @@
-import { Request, Response } from 'express';
+import axios from 'axios';
 
 import Auction from '@/models/Auction';
 import AuctionUser, { AuctionUserDocument } from '@/models/AuctionUser';
 import {
-    AuctionUserInput,
-    BulkSaveResponse,
-    DefaultResponse,
-    GetAuctionUsersResponse,
-} from '@/types/auction';
+    SaveAuctionUsersReq,
+    SaveAuctionUsersRes,
+    GetAuctionUsersReq,
+    GetAuctionUsersRes,
+    UpdateCaptainsReq,
+    UpdateCaptainsRes,
+    SyncRiotDataReq,
+    SyncRiotDataRes,
+} from '@/types/auction.api';
 import { fetchUserRiotData } from '@/utils/riot/syncRiotUser';
 import { sleep } from '@/utils/sleep';
 
-export const saveAuctionUsers = async (
-    req: Request<{ code: string }, BulkSaveResponse, { users: AuctionUserInput[] }>,
-    res: Response<BulkSaveResponse>
-) => {
+export const saveAuctionUsers = async (req: SaveAuctionUsersReq, res: SaveAuctionUsersRes) => {
     try {
         const { code } = req.params;
         const { users } = req.body;
@@ -45,10 +46,7 @@ export const saveAuctionUsers = async (
     }
 };
 
-export const getAuctionUsers = async (
-    req: Request<{ code: string }, GetAuctionUsersResponse>,
-    res: Response<GetAuctionUsersResponse>
-) => {
+export const getAuctionUsers = async (req: GetAuctionUsersReq, res: GetAuctionUsersRes) => {
     try {
         const { code } = req.params;
         const doc = await AuctionUser.findOne({ code });
@@ -67,10 +65,7 @@ export const getAuctionUsers = async (
     }
 };
 
-export const updateCaptains = async (
-    req: Request<{ code: string }, any, { captains: string[] }>,
-    res: Response
-) => {
+export const updateCaptains = async (req: UpdateCaptainsReq, res: UpdateCaptainsRes) => {
     try {
         const { code } = req.params;
         const { captains } = req.body;
@@ -114,14 +109,10 @@ export const updateCaptains = async (
     }
 };
 
-export const syncRiotData = async (
-    req: Request<{ code: string }, DefaultResponse>,
-    res: Response<DefaultResponse>
-) => {
+export const syncRiotData = async (req: SyncRiotDataReq, res: SyncRiotDataRes) => {
     try {
         const { code } = req.params;
         const RIOT_API_KEY = process.env.RIOT_API_KEY;
-        const matchRegion = 'asia';
 
         if (!RIOT_API_KEY) {
             res.status(500).json({ success: false, message: 'API 키 없음' });
@@ -133,14 +124,6 @@ export const syncRiotData = async (
             res.status(404).json({ success: false, message: '유저 없음' });
             return;
         }
-
-        // if (doc.riotFetched) {
-        //     console.warn(`[⚠️ 연동 차단됨] 이미 연동됨: ${code}`);
-        //     res.status(400).json({ success: false, message: '이미 라이엇 데이터 연동됨' });
-        //     return;
-        // }
-
-        console.log(`[🟢 연동 시작] code: ${code}, 유저 수: ${doc.users.length}`);
 
         const enrichedUsers = [];
         const targetUsers = doc.users.slice(0, 2);
@@ -158,12 +141,14 @@ export const syncRiotData = async (
                 }
 
                 await sleep(1200);
-            } catch (e: any) {
-                console.error(`[❌ Riot 연동 실패: ${user.nickname}]`, e.message);
-                if (e.response) {
-                    console.error('[📛 응답 코드]', e.response.status);
-                    console.error('[📛 응답 바디]', e.response.data);
+            } catch (e: unknown) {
+                console.error(`[❌ Riot 연동 실패: ${user.nickname}]`, e);
+
+                if (axios.isAxiosError(e)) {
+                    console.error('[📛 응답 코드]', e.response?.status);
+                    console.error('[📛 응답 바디]', e.response?.data);
                 }
+
                 enrichedUsers.push(user);
                 await sleep(1200);
             }
@@ -174,15 +159,15 @@ export const syncRiotData = async (
         doc.riotFetchedAt = new Date();
         await doc.save();
 
-        console.log(`\n[✅ 연동 완료] 유저 수: ${enrichedUsers.length}, code: ${code}`);
-
         res.status(200).json({ success: true });
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error('Riot Sync Error:', err);
-        if (err.response) {
-            console.error('[📛 응답 코드]', err.response.status);
-            console.error('[📛 응답 바디]', err.response.data);
+
+        if (axios.isAxiosError(err)) {
+            console.error('[📛 응답 코드]', err.response?.status);
+            console.error('[📛 응답 바디]', err.response?.data);
         }
+
         res.status(500).json({ success: false, message: '서버 오류' });
     }
 };

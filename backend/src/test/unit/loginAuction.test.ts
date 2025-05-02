@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
-import { Request, Response } from 'express';
 
 import { adminLogin } from '@/controllers/auctionController';
 import Auction from '@/models/Auction';
-import { AdminLoginRequest, AdminLoginResponse } from '@/types/auction';
+import { AdminLoginRequest } from '@/types/auction';
+import { AdminLoginReq, AdminLoginRes } from '@/types/auction.api';
 
 jest.mock('@/models/Auction');
 jest.mock('bcrypt');
@@ -14,14 +14,14 @@ const mockLoginData: AdminLoginRequest = {
 };
 
 describe('adminLogin', () => {
-    const mockRequest = {
+    const mockRequest: AdminLoginReq = {
         body: mockLoginData,
-    } as Request<any, AdminLoginResponse, AdminLoginRequest>;
+    } as AdminLoginReq;
 
-    const mockResponse = {
+    const mockResponse: AdminLoginRes = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
-    } as unknown as Response;
+    } as unknown as AdminLoginRes;
 
     it('should return token if credentials match', async () => {
         (Auction.findOne as jest.Mock).mockResolvedValueOnce({

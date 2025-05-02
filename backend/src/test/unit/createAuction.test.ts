@@ -1,8 +1,7 @@
-import { Request, Response } from 'express';
-
 import { createAuction } from '@/controllers/auctionController';
 import Auction from '@/models/Auction';
-import { AuctionCreateRequest, AuctionCreateResponse } from '@/types/auction';
+import { AuctionCreateRequest } from '@/types/auction';
+import { AuctionCreateReq, AuctionCreateRes } from '@/types/auction.api';
 
 jest.mock('@/models/Auction');
 
@@ -17,12 +16,12 @@ const mockCreateData: AuctionCreateRequest = {
 describe('createAuction', () => {
     const mockRequest = {
         body: mockCreateData,
-    } as Request<any, AuctionCreateResponse, AuctionCreateRequest>;
+    } as AuctionCreateReq;
 
-    const mockResponse = {
+    const mockResponse: AuctionCreateRes = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
-    } as unknown as Response;
+    } as unknown as AuctionCreateRes;
 
     it('should create an auction and return success', async () => {
         (Auction.create as jest.Mock).mockImplementation(async data => data);
