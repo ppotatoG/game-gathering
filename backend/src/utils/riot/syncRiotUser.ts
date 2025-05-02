@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { AxiosError } from 'axios';
 
 import { sleep } from '@/utils/sleep';
 
@@ -71,11 +72,13 @@ export const fetchUserRiotData = async (
             subRole: sortedPositions[1]?.[0] ?? null,
             mostChampion: sortedChamps[0]?.[0] ?? null,
         };
-    } catch (e: any) {
-        console.error(`[❌ Riot 연동 실패: ${nickname}]`, e.message);
-        if (e.response) {
-            console.error('[📛 응답 코드]', e.response.status);
-            console.error('[📛 응답 바디]', e.response.data);
+    } catch (e: unknown) {
+        const err = e as AxiosError;
+
+        console.error(`[❌ Riot 연동 실패: ${nickname}]`, err.message);
+        if (err.response) {
+            console.error('[📛 응답 코드]', err.response.status);
+            console.error('[📛 응답 바디]', err.response.data);
         }
         return null;
     } finally {
