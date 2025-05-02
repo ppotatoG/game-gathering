@@ -1,4 +1,4 @@
-import { createAuction, adminLogin } from './auction.controller';
+import { createAuction, adminLogin } from './init.controller';
 
 import {
     handleAuctionStart,
