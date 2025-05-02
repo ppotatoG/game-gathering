@@ -1,17 +1,19 @@
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 
 import { nicknameMap } from '../stores/nicknameMap';
 
 import AuctionUser, { AuctionUserDocument } from '@/models/AuctionUser';
+import { AuctionSocket } from '@/types/socket';
 
-export default function registerConnectionHandlers(io: Server, socket: Socket) {
+export default function registerConnectionHandlers(io: Server, socket: AuctionSocket) {
     socket.on('auction:check-nickname', async ({ auctionCode, nickname }, callback) => {
         const lower = nickname.toLowerCase();
         const doc = (await AuctionUser.findOne({
             code: auctionCode,
         })) as AuctionUserDocument | null;
 
-        const isCaptain = doc?.users.some(u => u.isCaptain && u.nickname.toLowerCase() === lower);
+        const isCaptain =
+            doc?.users.some(u => u.isCaptain && u.nickname.toLowerCase() === lower) ?? false;
         const isAlreadyJoined = nicknameMap.get(auctionCode)?.has(lower) ?? false;
         callback(isCaptain && !isAlreadyJoined);
     });
@@ -30,8 +32,8 @@ export default function registerConnectionHandlers(io: Server, socket: Socket) {
 
         if (isAdmin) {
             socket.join(auctionCode);
-            (socket as any).auctionCode = auctionCode;
-            (socket as any).nickname = 'admin';
+            socket.data.auctionCode = auctionCode;
+            socket.data.nickname = 'admin';
             console.log(`✅ Admin joined (${auctionCode})`);
             return;
         }
@@ -50,35 +52,33 @@ export default function registerConnectionHandlers(io: Server, socket: Socket) {
         currentSet.add(lower);
         nicknameMap.set(auctionCode, currentSet);
         socket.join(auctionCode);
-        (socket as any).nickname = lower;
-        (socket as any).auctionCode = auctionCode;
+        socket.data.nickname = lower;
+        socket.data.auctionCode = auctionCode;
         console.log(`✅ Captain joined: ${nickname} (${auctionCode})`);
     });
 
     socket.on('auction:leave', () => {
-        const nickname = (socket as any).nickname;
-        const auctionCode = (socket as any).auctionCode;
+        const nickname = socket.data.nickname;
+        const auctionCode = socket.data.auctionCode;
         if (!nickname || !auctionCode) return;
 
         const set = nicknameMap.get(auctionCode);
-        if (set) {
-            set.delete(nickname);
-            if (set.size === 0) nicknameMap.delete(auctionCode);
-        }
+        set?.delete(nickname);
+        if (set?.size === 0) nicknameMap.delete(auctionCode);
+
         socket.leave(auctionCode);
         console.log(`👋 User left: ${nickname} (${auctionCode})`);
     });
 
     socket.on('disconnect', () => {
-        const nickname = (socket as any).nickname;
-        const auctionCode = (socket as any).auctionCode;
+        const nickname = socket.data.nickname;
+        const auctionCode = socket.data.auctionCode;
         if (!nickname || !auctionCode) return;
 
         const set = nicknameMap.get(auctionCode);
-        if (set) {
-            set.delete(nickname);
-            if (set.size === 0) nicknameMap.delete(auctionCode);
-        }
+        set?.delete(nickname);
+        if (set?.size === 0) nicknameMap.delete(auctionCode);
+
         console.log(`❌ User disconnected: ${socket.id}, ${nickname} (${auctionCode})`);
     });
 }
