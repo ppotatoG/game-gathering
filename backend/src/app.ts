@@ -7,6 +7,7 @@ import express from 'express';
 import { Server } from 'socket.io';
 
 import auctionRouter from '@/routes/auction';
+import auctionSocket from '@/sockets/auction.socket';
 
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
 
@@ -24,7 +25,6 @@ const io = new Server(server, {
 app.use('/api/auction', auctionRouter(io));
 
 // 소켓 등록
-import auctionSocket from '@/sockets/auction.socket';
 auctionSocket(io);
 
 // 외부에서 app과 server를 둘 다 사용할 수 있도록 export
