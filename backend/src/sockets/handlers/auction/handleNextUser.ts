@@ -2,7 +2,7 @@ import { Server, Socket } from 'socket.io';
 
 import { auctionStateMap } from '../../stores/auctionStateMap';
 
-import AuctionUser, { AuctionUserDocument } from '@/models/AuctionUser';
+import AuctionUser from '@/models/AuctionUser';
 import { getRandomUser } from '@/utils/getRandomUser';
 import { getRemainingUsers } from '@/utils/getRemainingUsers';
 
