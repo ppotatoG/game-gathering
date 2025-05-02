@@ -1,4 +1,3 @@
-import { AuctionUserDocument } from '@/models/AuctionUser';
 export interface AuctionCreateRequest {
     clubName: string;
     hostName: string;
@@ -7,21 +6,9 @@ export interface AuctionCreateRequest {
     adminPassword: string;
 }
 
-export interface AuctionCreateResponse {
-    success: boolean;
-    data?: AuctionUserDocument;
-    message?: string;
-}
-
 export interface AdminLoginRequest {
     code: string;
     adminPassword: string;
-}
-
-export interface AdminLoginResponse {
-    success: boolean;
-    data?: { code: string };
-    message?: string;
 }
 
 export interface AuctionUserInput {
@@ -30,22 +17,21 @@ export interface AuctionUserInput {
     weight: number;
 }
 
-export interface BulkSaveResponse {
+export interface BaseResponse {
     success: boolean;
     message?: string;
 }
 
-export interface GetAuctionUsersResponse {
-    success: boolean;
+export interface GetAuctionUsersResponse extends BaseResponse {
     users?: AuctionUserInput[];
-    message?: string;
     riotFetched?: boolean;
     riotFetchedAt?: Date | null;
 }
 
-export interface DefaultResponse {
-    success: boolean;
-    message?: string;
+export interface BulkSaveResponse extends BaseResponse {}
+
+export interface AdminLoginResponse extends BaseResponse {
+    data?: { code: string };
 }
 
 export interface AuctionBid {
