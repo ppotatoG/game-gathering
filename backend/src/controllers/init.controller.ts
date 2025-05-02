@@ -1,19 +1,15 @@
 import bcrypt from 'bcrypt';
-import { Request, Response } from 'express';
 import { nanoid } from 'nanoid';
 
 import Auction from '@/models/Auction';
 import {
-    AdminLoginRequest,
-    AdminLoginResponse,
-    AuctionCreateRequest,
-    AuctionCreateResponse,
-} from '@/types/auction';
+    AuctionCreateReq,
+    AuctionCreateRes,
+    AdminLoginReq,
+    AdminLoginRes,
+} from '@/types/auction.api';
 
-export const createAuction = async (
-    req: Request<AuctionCreateRequest>,
-    res: Response<AuctionCreateResponse>
-) => {
+export const createAuction = async (req: AuctionCreateReq, res: AuctionCreateRes) => {
     try {
         const { clubName, hostName, auctionTitle, memberCount, adminPassword } = req.body;
 
@@ -50,10 +46,7 @@ export const createAuction = async (
     }
 };
 
-export const adminLogin = async (
-    req: Request<{}, AdminLoginResponse, AdminLoginRequest>,
-    res: Response<AdminLoginResponse>
-) => {
+export const adminLogin = async (req: AdminLoginReq, res: AdminLoginRes) => {
     try {
         const { code, adminPassword } = req.body;
 
@@ -74,7 +67,8 @@ export const adminLogin = async (
             return;
         }
 
-        const { adminPasswordHash, ...safeAuction } = auction.toObject();
+        const safeAuction = auction.toObject();
+        delete safeAuction.adminPasswordHash;
 
         res.status(200).json({ success: true, data: safeAuction });
         return;
