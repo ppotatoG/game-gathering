@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import request from 'supertest';
 
 import { app } from '@/app';
+import { dummyCaptains } from '@/constants/dummyCaptains';
+import { dummyUsers } from '@/constants/dummyUsers';
 
 let mongoServer: MongoMemoryServer;
 let code: string;
@@ -23,14 +25,13 @@ describe('Auction Flow Integration Test', () => {
             clubName: '롤소모임',
             hostName: '최우제',
             auctionTitle: '2025 스프링 내전',
-            memberCount: 10,
+            memberCount: 20,
             adminPassword: '1234',
         });
 
         expect(res.status).toBe(200);
         expect(res.body.success).toBe(true);
         expect(res.body.data).toBeDefined();
-
         code = res.body.data.code;
     });
 
@@ -45,19 +46,19 @@ describe('Auction Flow Integration Test', () => {
         expect(res.body.data.code).toBeDefined();
     });
 
-    it('3. should import users', async () => {
+    it('3. should import 20 users', async () => {
         const res = await request(app)
             .post(`/api/auction/${code}/users`)
-            .send({ users: [{ nickname: 'aaa', tag: '1234', weight: 1500 }] });
+            .send({ users: dummyUsers });
 
         expect(res.status).toBe(200);
         expect(res.body.success).toBe(true);
     });
 
-    it('4. should set captains', async () => {
+    it('4. should assign 4 captains', async () => {
         const res = await request(app)
             .patch(`/api/auction/${code}/users/captains`)
-            .send({ captains: ['aaa'] });
+            .send({ captains: dummyCaptains });
 
         expect(res.status).toBe(200);
         expect(res.body.success).toBe(true);
