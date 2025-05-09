@@ -1,4 +1,4 @@
-import { dummyUsers } from '@/constants/dummyUsers';
+import { dummyUsers } from '@/constants/test/dummyUsers';
 import { saveAuctionUsers } from '@/controllers/auctionController';
 import AuctionUser from '@/models/AuctionUser';
 import { SaveAuctionUsersReq, SaveAuctionUsersRes } from '@/types/api/auction';

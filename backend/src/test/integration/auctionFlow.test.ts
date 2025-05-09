@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 import request from 'supertest';
 
 import { app } from '@/app';
-import { dummyCaptains } from '@/constants/dummyCaptains';
-import { dummyUsers } from '@/constants/dummyUsers';
+import { dummyCaptains } from '@/constants/test/dummyCaptains';
+import { dummyUsers } from '@/constants/test/dummyUsers';
 
 let mongoServer: MongoMemoryServer;
 let code: string;

@@ -1,5 +1,5 @@
-import { dummyCaptains } from '@/constants/dummyCaptains';
-import { dummyUsers } from '@/constants/dummyUsers';
+import { dummyCaptains } from '@/constants/test/dummyCaptains';
+import { dummyUsers } from '@/constants/test/dummyUsers';
 import { updateCaptains } from '@/controllers/auctionController';
 import Auction from '@/models/Auction';
 import AuctionUser from '@/models/AuctionUser';
