@@ -1,9 +1,14 @@
-import { Server } from 'socket.io';
+import { Server as IOServer, Server } from 'socket.io';
 
 import { nicknameMap } from '../stores/nicknameMap';
 
 import AuctionUser, { AuctionUserDocument } from '@/models/AuctionUser';
-import { AuctionSocket } from '@/types/socket';
+import {
+    AuctionSocket,
+    ClientToServerEvents,
+    ServerToClientEvents,
+    AuctionSocketData,
+} from '@/types/socket';
 
 export default function registerConnectionHandlers(io: Server, socket: AuctionSocket) {
     socket.on('auction:check-nickname', async ({ auctionCode, nickname }, callback) => {
