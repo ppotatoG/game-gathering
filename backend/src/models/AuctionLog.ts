@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 
-import { AuctionLog } from '@/types/auction';
+import { AuctionLog } from '@/types/model/auction';
 
 const AuctionLogSchema = new Schema<AuctionLog>({
     auctionId: { type: String, required: true },

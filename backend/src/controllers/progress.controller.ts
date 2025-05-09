@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { Server, Socket } from 'socket.io';
 
 import AuctionLogModel from '@/models/AuctionLog';
-import { AuctionStartPayload, AuctionInputPayload, AuctionBid } from '@/types/auction';
+import { AuctionBid } from '@/types/model/auction';
+import { AuctionStartPayload, AuctionInputPayload } from '@/types/shared/auction';
 
 const currentBids = new Map<string, AuctionBid[]>();
 const endTimers = new Map<string, NodeJS.Timeout>();

@@ -1,7 +1,7 @@
 import { dummyUsers } from '@/constants/dummyUsers';
 import { saveAuctionUsers } from '@/controllers/auctionController';
 import AuctionUser from '@/models/AuctionUser';
-import { SaveAuctionUsersReq, SaveAuctionUsersRes } from '@/types/auction.api';
+import { SaveAuctionUsersReq, SaveAuctionUsersRes } from '@/types/api/auction';
 
 jest.mock('@/models/AuctionUser');
 

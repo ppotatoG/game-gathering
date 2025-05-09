@@ -2,8 +2,7 @@ import bcrypt from 'bcrypt';
 
 import { adminLogin } from '@/controllers/auctionController';
 import Auction from '@/models/Auction';
-import { AdminLoginRequest } from '@/types/auction';
-import { AdminLoginReq, AdminLoginRes } from '@/types/auction.api';
+import { AdminLoginRequest, AdminLoginReq, AdminLoginRes } from '@/types/api/auction';
 
 jest.mock('@/models/Auction');
 jest.mock('bcrypt');

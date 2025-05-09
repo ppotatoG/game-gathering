@@ -1,19 +1,29 @@
 import { Request, Response } from 'express';
 
+import { AuctionDocument } from '@/types/model/auction';
 import {
-    AuctionCreateRequest,
     AuctionUserInput,
     BulkSaveResponse,
     GetAuctionUsersResponse,
-    AdminLoginRequest,
     AdminLoginResponse,
     BaseResponse,
-} from './auction';
+} from '@/types/shared/auction';
 
-import { AuctionUserDocument } from '@/models/AuctionUser';
+export interface AuctionCreateRequest {
+    clubName: string;
+    hostName: string;
+    auctionTitle: string;
+    memberCount: number;
+    adminPassword: string;
+}
+
+export interface AdminLoginRequest {
+    code: string;
+    adminPassword: string;
+}
 
 export interface AuctionCreateResponse extends BaseResponse {
-    data?: AuctionUserDocument;
+    data?: AuctionDocument;
 }
 
 export type AdminLoginReq = Request<unknown, AdminLoginResponse, AdminLoginRequest>;

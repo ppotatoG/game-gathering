@@ -3,7 +3,7 @@ import { dummyUsers } from '@/constants/dummyUsers';
 import { updateCaptains } from '@/controllers/auctionController';
 import Auction from '@/models/Auction';
 import AuctionUser from '@/models/AuctionUser';
-import { UpdateCaptainsReq, UpdateCaptainsRes } from '@/types/auction.api';
+import { UpdateCaptainsReq, UpdateCaptainsRes } from '@/types/api/auction';
 
 jest.mock('@/models/Auction');
 jest.mock('@/models/AuctionUser');

@@ -11,7 +11,7 @@ import {
     UpdateCaptainsRes,
     SyncRiotDataReq,
     SyncRiotDataRes,
-} from '@/types/auction.api';
+} from '@/types/api/auction';
 import { fetchUserRiotData } from '@/utils/riot/syncRiotUser';
 import { sleep } from '@/utils/sleep';
 

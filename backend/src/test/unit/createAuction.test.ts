@@ -1,7 +1,6 @@
 import { createAuction } from '@/controllers/auctionController';
 import Auction from '@/models/Auction';
-import { AuctionCreateRequest } from '@/types/auction';
-import { AuctionCreateReq, AuctionCreateRes } from '@/types/auction.api';
+import { AuctionCreateRequest, AuctionCreateReq, AuctionCreateRes } from '@/types/api/auction';
 
 jest.mock('@/models/Auction');
 

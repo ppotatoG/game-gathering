@@ -7,7 +7,7 @@ import {
     AuctionCreateRes,
     AdminLoginReq,
     AdminLoginRes,
-} from '@/types/auction.api';
+} from '@/types/api/auction';
 
 export const createAuction = async (req: AuctionCreateReq, res: AuctionCreateRes) => {
     try {
