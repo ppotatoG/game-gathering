@@ -136,4 +136,66 @@ describe('auction:join socket', () => {
             }, 300);
         });
     });
+
+    test('captain nickname with different casing should join successfully', done => {
+        const client = Client(url);
+        client.emit('auction:join', {
+            auctionCode: AUCTION_CODE,
+            nickname: TEAM_CAPTAIN.toUpperCase(),
+            isAdmin: false,
+        });
+
+        client.on('connect', () => {
+            expect(client.connected).toBe(true);
+            client.close();
+            done();
+        });
+    });
+
+    test('user with empty nickname and isAdmin false should be denied', done => {
+        const client = Client(url);
+        client.on('join:denied', (msg: string) => {
+            expect(msg).toBe('등록된 팀장이 아닙니다.');
+            client.close();
+            done();
+        });
+
+        client.emit('auction:join', {
+            auctionCode: AUCTION_CODE,
+            nickname: '',
+            isAdmin: false,
+        });
+    });
+
+    test('non-captain user should be denied', done => {
+        const nonCaptain = dummyUsers.find(user => !dummyCaptains.includes(user.nickname));
+
+        const client = Client(url);
+        client.on('join:denied', (msg: string) => {
+            expect(msg).toBe('등록된 팀장이 아닙니다.');
+            client.close();
+            done();
+        });
+
+        client.emit('auction:join', {
+            auctionCode: AUCTION_CODE,
+            nickname: nonCaptain?.nickname || '임시유저',
+            isAdmin: false,
+        });
+    });
+
+    test('admin with any nickname should join successfully', done => {
+        const client = Client(url);
+        client.emit('auction:join', {
+            auctionCode: AUCTION_CODE,
+            nickname: '아무거나',
+            isAdmin: true,
+        });
+
+        client.on('connect', () => {
+            expect(client.connected).toBe(true);
+            client.close();
+            done();
+        });
+    });
 });
