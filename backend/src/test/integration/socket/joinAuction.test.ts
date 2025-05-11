@@ -224,4 +224,29 @@ describe('auction:join socket', () => {
             }, 100);
         });
     });
+    test('disconnect should remove nickname from nicknameMap', done => {
+        const DISCONNECT_NICKNAME = '포탑지킴이';
+        const client = Client(url);
+
+        client.on('connect', () => {
+            client.emit('auction:join', {
+                auctionCode: AUCTION_CODE,
+                nickname: DISCONNECT_NICKNAME,
+                isAdmin: false,
+            });
+
+            setTimeout(() => {
+                const lower = DISCONNECT_NICKNAME.toLowerCase();
+                expect(nicknameMap.get(AUCTION_CODE)?.has(lower)).toBe(true);
+
+                client.close();
+
+                setTimeout(() => {
+                    const map = nicknameMap.get(AUCTION_CODE);
+                    expect(map === undefined || !map.has(lower)).toBe(true);
+                    done();
+                }, 100);
+            }, 100);
+        });
+    });
 });
