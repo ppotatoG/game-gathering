@@ -20,12 +20,36 @@ import AuctionUser from '@/models/AuctionUser';
 import registerConnectionHandlers from '@/sockets/handlers/connectionHandler';
 import { AuctionSocket } from '@/types/socket';
 
-let io: Server;
-let httpServer: HTTPServer;
-let mongod: MongoMemoryServer;
+const ADMIN_PAYLOAD = {
+    auctionCode: AUCTION_CODE,
+    nickname: ADMIN_NICKNAME,
+    isAdmin: true,
+};
+
+const TEAM_PAYLOAD = {
+    auctionCode: AUCTION_CODE,
+    nickname: TEAM_CAPTAIN,
+    isAdmin: false,
+};
+
+const UNKNOWN_PAYLOAD = {
+    auctionCode: AUCTION_CODE,
+    nickname: UNKNOWN_NICKNAME,
+    isAdmin: false,
+};
+
+const DUPLICATE_PAYLOAD = {
+    auctionCode: AUCTION_CODE,
+    nickname: DUPLICATE_NICKNAME,
+    isAdmin: false,
+};
 
 describe('auction:join socket', () => {
+    let io: Server;
+    let httpServer: HTTPServer;
+    let mongod: MongoMemoryServer;
     let port: number;
+    let url: string;
 
     beforeAll(async () => {
         mongod = await MongoMemoryServer.create();
@@ -42,6 +66,7 @@ describe('auction:join socket', () => {
 
         await new Promise<void>(resolve => httpServer.listen(() => resolve()));
         port = (httpServer.address() as AddressInfo).port;
+        url = `http://localhost:${port}`;
 
         await AuctionUser.create({
             code: AUCTION_CODE,
@@ -60,12 +85,8 @@ describe('auction:join socket', () => {
     });
 
     test('admin should join successfully', done => {
-        const client = Client(`http://localhost:${port}`);
-        client.emit('auction:join', {
-            auctionCode: AUCTION_CODE,
-            nickname: ADMIN_NICKNAME,
-            isAdmin: true,
-        });
+        const client = Client(url);
+        client.emit('auction:join', ADMIN_PAYLOAD);
 
         client.on('connect', () => {
             expect(client.connected).toBe(true);
@@ -75,12 +96,8 @@ describe('auction:join socket', () => {
     });
 
     test('registered captain should join successfully', done => {
-        const client = Client(`http://localhost:${port}`);
-        client.emit('auction:join', {
-            auctionCode: AUCTION_CODE,
-            nickname: TEAM_CAPTAIN,
-            isAdmin: false,
-        });
+        const client = Client(url);
+        client.emit('auction:join', TEAM_PAYLOAD);
 
         client.on('connect', () => {
             expect(client.connected).toBe(true);
@@ -90,30 +107,22 @@ describe('auction:join socket', () => {
     });
 
     test('unregistered nickname should be denied', done => {
-        const client = Client(`http://localhost:${port}`);
+        const client = Client(url);
         client.on('join:denied', (msg: string) => {
             expect(msg).toBe('등록된 팀장이 아닙니다.');
             client.close();
             done();
         });
 
-        client.emit('auction:join', {
-            auctionCode: AUCTION_CODE,
-            nickname: UNKNOWN_NICKNAME,
-            isAdmin: false,
-        });
+        client.emit('auction:join', UNKNOWN_PAYLOAD);
     });
 
     test('duplicate nickname should be denied', done => {
-        const first = Client(`http://localhost:${port}`);
-        const second = Client(`http://localhost:${port}`);
+        const first = Client(url);
+        const second = Client(url);
 
         first.on('connect', () => {
-            first.emit('auction:join', {
-                auctionCode: AUCTION_CODE,
-                nickname: DUPLICATE_NICKNAME,
-                isAdmin: false,
-            });
+            first.emit('auction:join', DUPLICATE_PAYLOAD);
 
             setTimeout(() => {
                 second.on('join:denied', (msg: string) => {
@@ -123,11 +132,7 @@ describe('auction:join socket', () => {
                     done();
                 });
 
-                second.emit('auction:join', {
-                    auctionCode: AUCTION_CODE,
-                    nickname: DUPLICATE_NICKNAME,
-                    isAdmin: false,
-                });
+                second.emit('auction:join', DUPLICATE_PAYLOAD);
             }, 300);
         });
     });
