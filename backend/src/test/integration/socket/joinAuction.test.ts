@@ -18,6 +18,7 @@ import {
 } from '@/constants/test/socketTestConstants';
 import AuctionUser from '@/models/AuctionUser';
 import registerConnectionHandlers from '@/sockets/handlers/connectionHandler';
+import { nicknameMap } from '@/sockets/stores/nicknameMap';
 import { AuctionSocket } from '@/types/socket';
 
 const ADMIN_PAYLOAD = {
@@ -196,6 +197,31 @@ describe('auction:join socket', () => {
             expect(client.connected).toBe(true);
             client.close();
             done();
+        });
+    });
+    test('leave should remove nickname from nicknameMap', done => {
+        const LEAVE_NICKNAME = '전령몰빵러';
+        const client = Client(url);
+        client.on('connect', () => {
+            client.emit('auction:join', {
+                auctionCode: AUCTION_CODE,
+                nickname: LEAVE_NICKNAME,
+                isAdmin: false,
+            });
+
+            setTimeout(() => {
+                const lower = LEAVE_NICKNAME.toLowerCase();
+                expect(nicknameMap.get(AUCTION_CODE)?.has(lower)).toBe(true);
+
+                client.emit('auction:leave');
+
+                setTimeout(() => {
+                    const map = nicknameMap.get(AUCTION_CODE);
+                    expect(map === undefined || !map.has(lower)).toBe(true);
+                    client.close();
+                    done();
+                }, 100);
+            }, 100);
         });
     });
 });
