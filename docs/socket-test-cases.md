@@ -1,5 +1,5 @@
 ## ✅ connectionHandler
-- [x] auction:check-nickname - 닉네임 중복 및 팀장 여부 확인
+- [x] auction:check-nickname - auction:join 이벤트 테스트 내에서 닉네임 중복 및 팀장 여부 확인
 - [x] auction:join
   - [x] 관리자 진입 성공
   - [x] 등록된 팀장 진입 성공
@@ -17,20 +17,19 @@
 ## 🔄 registerAuctionHandlers
 
 ### handleInitAuction
-- [ ] auction:init - 경매 초기화 요청 시 상태 초기화 (유저 목록, 포인트, 타이머 등)
+- [x] auction:init - 경매 초기화 요청 시 상태 초기화 (유저 목록, 포인트, 타이머 등)
 
 ### handleNextUser
-- [ ] auction:next-user - 랜덤 유저 요청 이벤트 정상 작동
-- [ ] auction:show-user - 유저 공개 브로드캐스트 정상 작동 여부
+- [x] auction:next-user - 랜덤 유저 요청 이벤트 정상 작동
+- [x] auction:show-user - 유저 공개 브로드캐스트 정상 작동 여부
 
 ### handleStartBid
-- [ ] auction:start-bid - 경매 시작 시 타이머 설정 및 시작 여부
+- [x] auction:start-bid - 경매 시작 시 타이머 설정 및 시작 여부
 
 ### handleInputBid
-- [ ] auction:input-bid - 숫자 입력 시 타이머 초기화 여부
-- [ ] auction:input-bid - 제한 시간 내에만 반영되는지
-- [ ] auction:input-bid - 제한 시간 이후 입력 무시되는지
+- [ ] auction:input-bid - 제한 시간 내에만 반영되는지 (관련 테스트 케이스 추가 필요)
+- [ ] auction:input-bid - 제한 시간 이후 입력 무시되는지 (관련 테스트 케이스 추가 필요)
 
 ### handleFinalizeAuction
-- [ ] auction:finalize - 최고 입찰자 기준 낙찰 처리
-- [ ] auction:finalize - 입찰자 없을 경우 유찰 처리
+- [ ] auction:finalize - 최고 입찰자 기준 낙찰 처리 (관련 통합 테스트 케이스 추가 필요)
+- [ ] auction:finalize - 입찰자 없을 경우 유찰 처리 (관련 통합 테스트 케이스 및 유찰 로직 구현 필요)
