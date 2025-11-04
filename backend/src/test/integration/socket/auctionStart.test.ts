@@ -14,7 +14,9 @@ import AuctionUser from '@/models/AuctionUser';
 import handleInitAuction from '@/sockets/handlers/auction/handleInitAuction';
 import handleNextUser from '@/sockets/handlers/auction/handleNextUser';
 import handleStartBid from '@/sockets/handlers/auction/handleStartBid';
+import registerConnectionHandlers from '@/sockets/handlers/connectionHandler';
 import { auctionStateMap } from '@/sockets/stores/auctionStateMap';
+import { AuctionSocket } from '@/types/socket';
 
 describe('auction:start-bid socket test', () => {
     let io: Server;
@@ -23,7 +25,6 @@ describe('auction:start-bid socket test', () => {
     let port: number;
     let url: string;
 
-    // helper: wait until currentTarget is set
     const waitUntil = (check: () => boolean, timeout = 1000) =>
         new Promise<void>((resolve, reject) => {
             const interval = setInterval(() => {
@@ -32,6 +33,7 @@ describe('auction:start-bid socket test', () => {
                     resolve();
                 }
             }, 20);
+
             setTimeout(() => {
                 clearInterval(interval);
                 reject(new Error('Timeout waiting for condition'));
@@ -48,6 +50,7 @@ describe('auction:start-bid socket test', () => {
         io = new Server(httpServer, { cors: { origin: '*' } });
 
         io.on('connection', socket => {
+            registerConnectionHandlers(io, socket as unknown as AuctionSocket);
             handleInitAuction(io, socket);
             handleNextUser(io, socket);
             handleStartBid(io, socket);
@@ -67,7 +70,7 @@ describe('auction:start-bid socket test', () => {
     });
 
     afterAll(async () => {
-        io.close();
+        await io.close();
         httpServer.close();
         await mongoose.disconnect();
         await mongod.stop();
@@ -75,6 +78,12 @@ describe('auction:start-bid socket test', () => {
 
     test('should emit auction:start-bid after proper reset and next-user', done => {
         const client = Client(url);
+
+        const ADMIN_JOIN_PAYLOAD = {
+            auctionCode: AUCTION_CODE,
+            nickname: 'TestAdmin',
+            isAdmin: true,
+        };
 
         client.once('auction:start-bid', data => {
             try {
@@ -90,8 +99,10 @@ describe('auction:start-bid socket test', () => {
         });
 
         client.once('connect', () => {
-            // 🔥 reset-complete listener 먼저 등록
+            client.emit('auction:join', ADMIN_JOIN_PAYLOAD);
+
             client.once('auction:reset-complete', () => {
+                console.log('--- RESET COMPLETE! ---, auction:start-bid');
                 client.once('auction:show-user', async () => {
                     await waitUntil(() => {
                         const state = auctionStateMap.get(AUCTION_CODE);
@@ -104,7 +115,6 @@ describe('auction:start-bid socket test', () => {
                 client.emit('auction:next-user', { auctionCode: AUCTION_CODE });
             });
 
-            // 🔥 그 다음에 emit
             client.emit('auction:reset', { auctionCode: AUCTION_CODE });
         });
     }, 10000);

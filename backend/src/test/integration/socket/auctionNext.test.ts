@@ -13,6 +13,8 @@ import { AUCTION_CODE } from '@/constants/test/socketTestConstants';
 import AuctionUser from '@/models/AuctionUser';
 import handleInitAuction from '@/sockets/handlers/auction/handleInitAuction';
 import handleNextUser from '@/sockets/handlers/auction/handleNextUser';
+import registerConnectionHandlers from '@/sockets/handlers/connectionHandler';
+import { AuctionSocket } from '@/types/socket';
 
 describe('auction:next-user', () => {
     let io: Server;
@@ -31,6 +33,7 @@ describe('auction:next-user', () => {
         io = new Server(httpServer, { cors: { origin: '*' } });
 
         io.on('connection', socket => {
+            registerConnectionHandlers(io, socket as unknown as AuctionSocket);
             handleInitAuction(io, socket);
             handleNextUser(io, socket);
         });
@@ -49,7 +52,7 @@ describe('auction:next-user', () => {
     });
 
     afterAll(async () => {
-        io.close();
+        await io.close();
         httpServer.close();
         await mongoose.disconnect();
         await mongod.stop();
@@ -57,6 +60,12 @@ describe('auction:next-user', () => {
 
     test('should emit auction:show-user after auction:next-user', done => {
         const client = Client(url);
+
+        const ADMIN_JOIN_PAYLOAD = {
+            auctionCode: AUCTION_CODE,
+            nickname: 'TestAdmin',
+            isAdmin: true,
+        };
 
         client.once('auction:show-user', data => {
             try {
@@ -71,9 +80,12 @@ describe('auction:next-user', () => {
         });
 
         client.once('connect', () => {
+            client.emit('auction:join', ADMIN_JOIN_PAYLOAD);
+
             client.emit('auction:reset', { auctionCode: AUCTION_CODE });
 
             client.once('auction:reset-complete', () => {
+                console.log('--- RESET COMPLETE! ---, auction:next-user');
                 client.emit('auction:next-user', { auctionCode: AUCTION_CODE });
             });
         });
