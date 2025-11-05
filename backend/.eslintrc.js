@@ -12,6 +12,7 @@ module.exports = {
         es2021: true,
     },
     rules: {
+        '@typescript-eslint/no-empty-object-type': 'off',
         'prettier/prettier': 'error',
         quotes: ['error', 'single'],
         indent: 'off',
