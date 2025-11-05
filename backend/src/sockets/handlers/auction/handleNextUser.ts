@@ -66,7 +66,7 @@ export default function handleNextUser(io: Server, socket: Socket) {
                 isCaptain,
             } = selectedUser;
 
-            io.to(auctionCode).emit('auction:show-user', {
+            const emitPayload = {
                 nickname,
                 tag,
                 riotFetched,
@@ -75,8 +75,10 @@ export default function handleNextUser(io: Server, socket: Socket) {
                 subRole,
                 mostChampion,
                 isCaptain,
-                round: state.round,
-            });
+                round: updatedState.round,
+            };
+
+            io.to(auctionCode).emit('auction:show-user', emitPayload);
         } catch (err) {
             console.error('[소켓] auction:next-user 처리 중 에러 발생:', err);
             socket.emit('error', '서버 오류 발생');
