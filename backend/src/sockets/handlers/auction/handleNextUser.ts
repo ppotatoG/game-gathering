@@ -1,8 +1,7 @@
 import { Server, Socket } from 'socket.io';
 
-import { auctionStateMap } from '../../stores/auctionStateMap';
-
 import AuctionUser from '@/models/AuctionUser';
+import { getAuctionState, setAuctionState } from '@/utils/auctionStateRedis';
 import { getRandomUser } from '@/utils/getRandomUser';
 import { getRemainingUsers } from '@/utils/getRemainingUsers';
 
@@ -17,7 +16,7 @@ export default function handleNextUser(io: Server, socket: Socket) {
                 return;
             }
 
-            const state = auctionStateMap.get(auctionCode);
+            const state = await getAuctionState(auctionCode);
             if (!state) {
                 socket.emit('error', '경매 상태가 초기화되지 않았습니다.');
                 return;
@@ -33,7 +32,7 @@ export default function handleNextUser(io: Server, socket: Socket) {
 
             if (remaining.length === 0) {
                 console.log('[BACK] 모든 유저 경매 완료 ✅');
-                auctionStateMap.set(auctionCode, {
+                await setAuctionState(auctionCode, {
                     ...state,
                     isFinished: true,
                     currentTarget: null,
@@ -53,7 +52,7 @@ export default function handleNextUser(io: Server, socket: Socket) {
                 selectedUsers: [...state.selectedUsers, selectedUser],
             };
 
-            auctionStateMap.set(auctionCode, updatedState);
+            await setAuctionState(auctionCode, updatedState);
 
             const {
                 nickname,

@@ -1,12 +1,11 @@
 import { Server, Socket } from 'socket.io';
 
-import { auctionStateMap } from '../../stores/auctionStateMap';
-
+import { getAuctionState } from '@/utils/auctionStateRedis';
 import { resetTimer, clearAuctionTimer } from '@/utils/auctionTimer';
 
 export default function handleStartBid(io: Server, socket: Socket) {
-    socket.on('auction:start-bid', ({ auctionCode }) => {
-        const state = auctionStateMap.get(auctionCode);
+    socket.on('auction:start-bid', async ({ auctionCode }) => {
+        const state = await getAuctionState(auctionCode);
 
         if (!state) {
             socket.emit('error', '경매 상태가 초기화되지 않았습니다.');

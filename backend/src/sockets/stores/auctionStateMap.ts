@@ -1,6 +1,6 @@
 import { AuctionUserData } from '@/models/AuctionUser';
 
-interface Bid {
+export interface Bid {
     nickname: string;
     point: number;
     teamId: string;

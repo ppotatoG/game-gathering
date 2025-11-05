@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io';
 
-import { auctionStateMap } from '../../stores/auctionStateMap';
+import { getAuctionState } from '@/utils/auctionStateRedis';
 
 interface FinalizePayload {
     auctionCode: string;
@@ -8,8 +8,8 @@ interface FinalizePayload {
 }
 
 export default function handleFinalizeAuction(io: Server, socket: Socket) {
-    socket.on('auction:finalize', ({ auctionCode, nickname }: FinalizePayload) => {
-        const state = auctionStateMap.get(auctionCode);
+    socket.on('auction:finalize', async ({ auctionCode, nickname }: FinalizePayload) => {
+        const state = await getAuctionState(auctionCode);
 
         if (!state) {
             socket.emit('error', '경매 상태가 초기화되지 않았습니다.');

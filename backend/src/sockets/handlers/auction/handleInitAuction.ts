@@ -1,8 +1,9 @@
 import { Server, Socket } from 'socket.io';
 
-import { auctionStateMap, CaptainPoints } from '../../stores/auctionStateMap';
+import { CaptainPoints } from '../../stores/auctionStateMap';
 
 import AuctionUser, { AuctionUserDocument } from '@/models/AuctionUser';
+import { setAuctionState } from '@/utils/auctionStateRedis';
 
 const DEFAULT_CAPTAIN_POINTS = 1000;
 
@@ -28,7 +29,7 @@ export default function handleInitAuction(io: Server, socket: Socket) {
             }
         });
 
-        auctionStateMap.set(auctionCode, {
+        await setAuctionState(auctionCode, {
             currentTarget: null,
             captainBids: [],
             selectedUsers: [],
