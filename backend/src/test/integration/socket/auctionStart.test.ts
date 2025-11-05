@@ -15,8 +15,8 @@ import handleInitAuction from '@/sockets/handlers/auction/handleInitAuction';
 import handleNextUser from '@/sockets/handlers/auction/handleNextUser';
 import handleStartBid from '@/sockets/handlers/auction/handleStartBid';
 import registerConnectionHandlers from '@/sockets/handlers/connectionHandler';
-import { auctionStateMap } from '@/sockets/stores/auctionStateMap';
 import { AuctionSocket } from '@/types/socket';
+import { getAuctionState } from '@/utils/auctionStateRedis';
 
 describe('auction:start-bid socket test', () => {
     let io: Server;
@@ -25,24 +25,40 @@ describe('auction:start-bid socket test', () => {
     let port: number;
     let url: string;
 
-    const waitUntil = (check: () => boolean, timeout = 1000) =>
+    const waitUntil = (check: () => Promise<boolean> | boolean, timeout = 1000) =>
         new Promise<void>((resolve, reject) => {
-            const interval = setInterval(() => {
-                if (check()) {
-                    clearInterval(interval);
-                    resolve();
+            const intervalId = setInterval(async () => {
+                try {
+                    const result = await check();
+
+                    if (result) {
+                        clearInterval(intervalId);
+                        clearTimeout(timeoutId);
+                        resolve();
+                    }
+                } catch (error) {
+                    clearInterval(intervalId);
+                    clearTimeout(timeoutId);
+                    reject(error);
                 }
             }, 20);
 
-            setTimeout(() => {
-                clearInterval(interval);
-                reject(new Error('Timeout waiting for condition'));
+            const timeoutId = setTimeout(() => {
+                clearInterval(intervalId);
+                reject(new Error(`Timeout waiting for condition (${timeout}ms)`));
             }, timeout);
+
+            timeoutId.unref();
+            intervalId.unref();
         });
 
     beforeAll(async () => {
         mongod = await MongoMemoryServer.create();
         const uri = mongod.getUri();
+        if (mongoose.connection.readyState !== 0) {
+            await mongoose.disconnect();
+        }
+
         await mongoose.connect(uri);
 
         const app = express();
@@ -104,8 +120,8 @@ describe('auction:start-bid socket test', () => {
             client.once('auction:reset-complete', () => {
                 console.log('--- RESET COMPLETE! ---, auction:start-bid');
                 client.once('auction:show-user', async () => {
-                    await waitUntil(() => {
-                        const state = auctionStateMap.get(AUCTION_CODE);
+                    await waitUntil(async () => {
+                        const state = await getAuctionState(AUCTION_CODE);
                         return !!state?.currentTarget;
                     });
 

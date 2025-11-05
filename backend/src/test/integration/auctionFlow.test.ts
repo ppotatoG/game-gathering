@@ -11,6 +11,9 @@ let code: string;
 
 beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();
+    if (mongoose.connection.readyState !== 0) {
+        await mongoose.disconnect();
+    }
     await mongoose.connect(mongoServer.getUri(), {});
 });
 

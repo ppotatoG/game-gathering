@@ -26,6 +26,10 @@ describe('auction:next-user', () => {
     beforeAll(async () => {
         mongod = await MongoMemoryServer.create();
         const uri = mongod.getUri();
+        if (mongoose.connection.readyState !== 0) {
+            await mongoose.disconnect();
+        }
+
         await mongoose.connect(uri);
 
         const app = express();

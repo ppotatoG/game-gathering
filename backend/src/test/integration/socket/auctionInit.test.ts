@@ -12,7 +12,7 @@ import { dummyUsers } from '@/constants/test/dummyUsers';
 import { AUCTION_CODE } from '@/constants/test/socketTestConstants';
 import AuctionUser from '@/models/AuctionUser';
 import handleInitAuction from '@/sockets/handlers/auction/handleInitAuction';
-import { auctionStateMap } from '@/sockets/stores/auctionStateMap';
+import { getAuctionState } from '@/utils/auctionStateRedis';
 
 describe('auction:init socket', () => {
     let io: Server;
@@ -24,6 +24,10 @@ describe('auction:init socket', () => {
     beforeAll(async () => {
         mongod = await MongoMemoryServer.create();
         const uri = mongod.getUri();
+        if (mongoose.connection.readyState !== 0) {
+            await mongoose.disconnect();
+        }
+
         await mongoose.connect(uri);
 
         const app = express();
@@ -61,8 +65,8 @@ describe('auction:init socket', () => {
             client.emit('auction:reset', { auctionCode: AUCTION_CODE });
         });
 
-        client.on('auction:reset-complete', () => {
-            const state = auctionStateMap.get(AUCTION_CODE);
+        client.on('auction:reset-complete', async () => {
+            const state = await getAuctionState(AUCTION_CODE);
 
             expect(state).toBeDefined();
             expect(state?.captainPoints).toBeDefined();

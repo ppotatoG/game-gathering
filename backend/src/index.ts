@@ -17,17 +17,23 @@ mongoose
         try {
             await redisClient.connect();
             console.log('⚡ BACKEND: Redis connected!');
-            server.listen(PORT, () => {
-                console.log(`🚀 BACKEND: Server listening on port ${PORT}`);
-            });
+            if (process.env.NODE_ENV !== 'test') {
+                server.listen(PORT, () => {
+                    console.log(`🚀 BACKEND: Server listening on port ${PORT}`);
+                });
+            }
         } catch (redisErr) {
             console.error('❌ BACKEND: Redis connection error:', redisErr);
-            process.exit(1);
+            if (process.env.NODE_ENV !== 'test') {
+                process.exit(1);
+            }
         }
     })
     .catch(err => {
         console.error('❌ BACKEND: MongoDB connection error:', err);
-        process.exit(1);
+        if (process.env.NODE_ENV !== 'test') {
+            process.exit(1);
+        }
     });
 
 export { redisClient };
