@@ -1,0 +1,71 @@
+version: '3.8'
+services:
+  # 1. MongoDB 서비스
+  mongo:
+    image: mongo:latest
+    container_name: game_mongo
+    # 로컬 데이터 보존을 위해 볼륨 사용 (재시작해도 데이터 유지)
+    volumes:
+      - ./mongo-data:/data/db
+    # 포트를 외부로 노출하지 않거나, 필요하다면 27017:27017로 설정 가능
+    # 우리는 백엔드에서만 접속할 것이므로 주석 처리하여 내부망으로만 사용 권장
+    # ports:
+    #   - "27017:27017"
+    restart: always
+
+  # 2. Redis 서비스
+  redis:
+    image: redis:latest
+    container_name: game_redis
+    # Redis는 보통 캐시로 사용되므로, 데이터 유지가 필요 없다면 volumes 생략 가능
+    # ports:
+    #   - "6379:6379" # 외부 접속이 필요없다면 주석 처리
+    restart: always
+
+  # 3. 백엔드 서비스 (Node.js/Express)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: game_backend
+    # 로컬 코드 변경을 실시간 반영하고, node_modules는 컨테이너 내부에서 관리
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    working_dir: /usr/src/app
+    command: npm run dev
+    # 백엔드의 8080 포트를 외부 호스트의 8080 포트로 노출
+    ports:
+      - "8080:8080"
+    # MongoDB와 Redis가 먼저 시작되도록 보장
+    depends_on:
+      - mongo
+      - redis
+    # 환경 변수 설정
+    environment:
+      # **중요:** IP 대신 Docker Compose 서비스 이름 'mongo' 사용
+      MONGO_URI: mongodb://mongo:27017/game-gathering
+      PORT: 8080
+      RIOT_API_KEY: ${RIOT_API_KEY} # 호스트 환경 변수를 사용하거나 여기에 직접 입력
+      # Redis 접속 설정 (필요 시)
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+  # 4. 프론트엔드 서비스 (Vite/React 등)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: game_frontend
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    working_dir: /usr/src/app
+    command: npm run dev
+    # 프론트엔드 개발 서버 포트를 외부 호스트의 3000 포트로 노출
+    ports:
+      - "3000:3000"
+    # 프론트엔드는 백엔드에 접속할 때 호스트의 IP(localhost)를 사용하도록 환경 변수 유지
+    environment:
+      VITE_API_BASE_URL: http://localhost:8080
+      VITE_SOCKET_URL: http://localhost:8080
