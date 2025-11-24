@@ -1,25 +1,39 @@
-# 1. Base Image 선택: 경량 Node.js 런타임 환경 (Alpine 리눅스 기반)
-#    - 용량이 작아 이미지 다운로드 및 빌드 속도가 빠릅니다.
-FROM node:20-alpine
+# =========================================================
+# 1. BUILD STAGE: 정적 파일 빌드
+# =========================================================
+FROM node:20-alpine AS builder
 
-  # 2. 작업 디렉토리 설정: 컨테이너 내부에서 모든 작업이 일어날 기본 경로 지정
 WORKDIR /usr/src/app
 
-  # 3. 종속성 복사: package.json과 package-lock.json만 복사 (npm install 캐싱 최적화)
-  #    - 이 파일들만 복사하여 npm install을 먼저 수행하면,
-  #      코드 파일이 바뀌더라도 이 파일들이 바뀌지 않으면 npm install 단계를 건너뛰어 빌드 속도가 빨라집니다.
+# 3. 종속성 복사 및 설치 (캐싱 최적화)
 COPY package*.json ./
-
-# --ignore-scripts 플래그 추가
+# 🚨 'postinstall' 스크립트를 무시하고 의존성 설치
 RUN npm install --ignore-scripts
 
-  # 5. 모든 코드 복사: 나머지 모든 애플리케이션 코드를 작업 디렉토리로 복사
-  #    - docker-compose.yml의 volume 설정이 개발 중 실시간 코드를 동기화해 주지만,
-  #      최초 이미지 빌드 시에는 코드가 있어야 합니다.
+# 4. 소스 코드 복사
 COPY . .
 
-# 6. 포트 노출 (선택 사항): 실제 포트 설정은 docker-compose.yml에서 했으므로 생략 가능
-# EXPOSE 3000 # 프론트엔드
-# EXPOSE 8080 # 백엔드
+# 5. 프로덕션 빌드 실행
+# 'npm run build'는 'vite build'를 실행하며, 이 단계에서 정적 파일(/dist)이 생성됩니다.
+RUN npm run build
 
-# CMD 명령어는 docker-compose.yml에서 'command: npm run dev'로 이미 지정했으므로 여기에선 생략합니다.
+# =========================================================
+# 2. SERVE STAGE: 빌드된 파일을 서빙 (경량화)
+# =========================================================
+# 정적 파일을 서빙할 경량 Node.js 이미지 사용
+FROM node:20-alpine
+
+WORKDIR /usr/src/app
+
+# 6. 정적 파일 서빙을 위한 http-server 설치
+# serve 또는 http-server 중 하나를 선택하여 설치합니다.
+RUN npm install -g http-server
+
+# 7. 빌드 결과물 복사
+# 빌드 스테이지에서 생성된 정적 파일(dist 폴더)만 복사합니다.
+COPY --from=builder /usr/src/app/dist ./dist
+
+# 8. 컨테이너 시작 명령 (http-server를 사용하여 정적 파일 서빙)
+# 컨테이너 포트 3000번에서 dist 폴더를 서빙합니다.
+EXPOSE 3000
+CMD ["http-server", "dist", "-p", "3000"]
