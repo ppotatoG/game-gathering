@@ -63,7 +63,7 @@ const AdminPage = () => {
         nickname: user.nickname,
         tag: user.tag,
         tier: getTierFromWeight(user.weight),
-        isCaptain: selectedCaptains.has(user.nickname)
+        isCaptain: user.isCaptain || selectedCaptains.has(user.nickname)
     }));
 
     return (
