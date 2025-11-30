@@ -34,5 +34,20 @@ export const useAuctionActions = ({ code, nickname }: { code: string; nickname: 
         socket.emit('auction:next-user', { auctionCode: code });
     };
 
-    return { emitInit, emitStart, emitBid, emitNextUser };
+    const emitStartBid = () => {
+        console.log('[소켓] 경매 시작');
+        socket.emit('auction:start-bid', { auctionCode: code });
+    };
+
+    const emitEnd = () => {
+        console.log('[소켓] 경매 종료');
+        socket.emit('auction:end', { auctionCode: code });
+    };
+
+    const emitPause = (paused: boolean) => {
+        console.log('[소켓] 경매 일시정지/재개', paused);
+        socket.emit('auction:pause', { auctionCode: code, paused });
+    };
+
+    return { emitInit, emitStart, emitBid, emitNextUser, emitStartBid, emitEnd, emitPause };
 };

@@ -61,6 +61,9 @@ interface AuctionState {
     selectedUsers: AuctionUserData[];
     round: number;
     isFinished: boolean;
+    isReady?: boolean;
+    isBidding?: boolean;
+    isPaused?: boolean;
     captainPoints: Record<string, number>;
 }
 

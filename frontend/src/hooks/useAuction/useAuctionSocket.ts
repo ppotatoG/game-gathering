@@ -37,6 +37,9 @@ export const useAuctionSocket = ({
                 selectedUsers: [],
                 round: 0,
                 isFinished: false,
+                isReady: false,
+                isBidding: false,
+                isPaused: false,
                 captainPoints: {}
             });
         });
@@ -46,11 +49,28 @@ export const useAuctionSocket = ({
             setChatMessages(prev => [...prev, data]);
         });
 
+        socket.on('auction:ended', (data: { message: string; round: number }) => {
+            console.log('[소켓] 경매 종료:', data);
+            setTargetUser(null);
+            setBids([]);
+        });
+
+        socket.on('auction:paused', (data: { message: string; round: number }) => {
+            console.log('[소켓] 경매 일시정지:', data);
+        });
+
+        socket.on('auction:resumed', (data: { message: string; round: number }) => {
+            console.log('[소켓] 경매 재개:', data);
+        });
+
         return () => {
             socket.off('auction:show-user');
             socket.off('auction:selected');
             socket.off('auction:initialized');
             socket.off('chatMessage');
+            socket.off('auction:ended');
+            socket.off('auction:paused');
+            socket.off('auction:resumed');
         };
     }, []);
 };

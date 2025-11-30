@@ -13,7 +13,11 @@ export function useAuction() {
     const [bids, setBids] = useState<Bid[]>([]);
     const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
-    const { emitStart, emitBid, emitNextUser, emitInit } = useAuctionActions({ code, nickname });
+    const { emitStart, emitBid, emitNextUser, emitInit, emitStartBid, emitEnd, emitPause } =
+        useAuctionActions({
+            code,
+            nickname
+        });
 
     useAuctionSocket({ setTargetUser, setBids, setAuctionState, setChatMessages });
 
@@ -32,6 +36,9 @@ export function useAuction() {
         emitStart,
         emitBid,
         emitNextUser,
-        emitInit
+        emitInit,
+        emitStartBid,
+        emitEnd,
+        emitPause
     };
 }

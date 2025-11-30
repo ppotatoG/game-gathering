@@ -20,10 +20,13 @@ export default function Auction() {
         setNickname,
         handleJoin,
         bids,
-        emitNextUser,
+        emitStartBid,
         currentAuctionTarget,
         emitInit,
         emitBid,
+        emitEnd,
+        emitPause,
+        auctionState,
         chatMessages
     } = useAuction();
 
@@ -38,8 +41,11 @@ export default function Auction() {
             {isAdmin && (
                 <AdminControls
                     emitInit={emitInit}
-                    emitNextUser={emitNextUser}
+                    emitStartBid={emitStartBid}
+                    emitEnd={emitEnd}
+                    emitPause={emitPause}
                     currentAuctionTarget={currentAuctionTarget}
+                    auctionState={auctionState}
                 />
             )}
             <Grid2 container spacing={2} padding={2}>
