@@ -15,26 +15,36 @@ sequenceDiagram
   participant Admin
   participant Client
   participant SocketServer
-  participant DB
+  participant Redis
+  participant MongoDB
 
+  %% 경매 유저 선택
   Admin->>SocketServer: auction:next-user
-  SocketServer->>SocketServer: 남은 유저 중 캡틴 제외 후 랜덤 선택
-  SocketServer-->>Client: auction:show-user (선택된 유저)
+  SocketServer->>MongoDB: 남은 유저 목록 조회 (캡틴 제외)
+  MongoDB-->>SocketServer: 유저 목록
+  SocketServer->>Redis: 현재 매물 유저 및 라운드 상태 업데이트 (HSET)
+  SocketServer->>Client: auction:show-user (선택된 유저)
 
+  %% 입찰 시작 및 타이머
   Admin->>SocketServer: auction:start-bid
+  SocketServer->>Redis: 경매 타이머 시작 (TTL 설정 또는 Pub/Sub 이벤트)
   SocketServer->>Client: auction:start-bid (10초 타이머 시작)
 
+  %% 입찰 처리
   Client->>SocketServer: auction:input (입찰 포인트)
-  SocketServer->>SocketServer: 입찰 내역 저장
-  SocketServer-->>Client: auction:selected (현재 입찰 내역 broadcast)
+  SocketServer->>Redis: 입찰 내역 저장 (ZADD to ZSET: Score=Point)
+  SocketServer->>Client: auction:selected (현재 최고 입찰 내역 broadcast)
 
-  SocketServer->>SocketServer: 10초 후 최고가 계산
-  SocketServer-->>Client: auction:timeout (최고 입찰자 및 유찰 여부)
+  %% 타이머 종료 및 결과 계산
+  Redis-->>SocketServer: 10초 타이머 만료 알림
+  SocketServer->>Redis: ZSET에서 최고가 계산 (ZREVRANGE)
+  SocketServer->>Client: auction:timeout (최고 입찰자 및 유찰 여부)
 
+  %% 낙찰 확정
   Admin->>SocketServer: auction:finalize (낙찰 확정 or 유찰)
-  SocketServer->>DB: 낙찰 결과 저장 (AuctionUser 모델 업데이트 또는 별도 서비스에서 처리)
-  SocketServer-->>Client: auction:finalized (낙찰 결과)
-  Admin->>SocketServer: auction:next-user (다음 유저 요청)
+  SocketServer->>MongoDB: 낙찰 결과 저장 (AuctionUser.users 및 captainPoints 업데이트)
+  SocketServer->>Redis: 실시간 상태 초기화 및 잔여 포인트 업데이트 (HSET)
+  SocketServer->>Client: auction:finalized (낙찰 결과)
 ```
 
 ## 🧩 저장소별 역할 정리

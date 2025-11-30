@@ -27,6 +27,19 @@ export default function handleNextUser(io: Server, socket: Socket) {
                 return;
             }
 
+            if (state.isPaused) {
+                socket.emit('error', '일시정지된 경매입니다. 먼저 경매를 재개해주세요.');
+                return;
+            }
+
+            if (state.isBidding) {
+                socket.emit(
+                    'error',
+                    '경매가 진행 중입니다. 현재 경매를 완료한 후 다음 유저를 선택할 수 있습니다.'
+                );
+                return;
+            }
+
             const remaining = getRemainingUsers(doc.users, state.selectedUsers);
             console.log('[BACK] 남은 유저 수:', remaining.length);
 

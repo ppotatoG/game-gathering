@@ -12,6 +12,7 @@ export async function setAuctionState(code: string, state: AuctionState): Promis
         isFinished: state.isFinished ? 'true' : 'false',
         isReady: state.isReady ? 'true' : 'false',
         isBidding: state.isBidding ? 'true' : 'false',
+        isPaused: state.isPaused ? 'true' : 'false',
         captainPoints: JSON.stringify(state.captainPoints),
         ...(state.endAt && { endAt: state.endAt.toString() }),
     });
@@ -44,6 +45,7 @@ export async function getAuctionState(code: string): Promise<AuctionState | null
         isFinished: stateData.isFinished === 'true',
         isReady: stateData.isReady === 'true',
         isBidding: stateData.isBidding === 'true',
+        isPaused: stateData.isPaused === 'true',
         currentTarget: stateData.currentTarget ? JSON.parse(stateData.currentTarget) : null,
         captainPoints: stateData.captainPoints ? JSON.parse(stateData.captainPoints) : {},
         selectedUsers: selectedUsers,

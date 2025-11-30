@@ -55,6 +55,11 @@ export interface AuctionState {
     isBidding: boolean;
 
     /**
+     * 경매 일시정지 여부
+     */
+    isPaused: boolean;
+
+    /**
      * 경매 종료 시간 (타이머)
      */
     timerId?: NodeJS.Timeout;

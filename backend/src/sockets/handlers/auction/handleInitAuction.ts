@@ -38,6 +38,7 @@ export default function handleInitAuction(io: Server, socket: Socket) {
             captainPoints,
             isReady: false,
             isBidding: false,
+            isPaused: false,
             timerId: undefined,
             endAt: undefined,
         });
